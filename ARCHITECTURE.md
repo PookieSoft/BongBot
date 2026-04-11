@@ -55,7 +55,7 @@ The entry point orchestrates bot startup in this sequence:
 | Event | Lines | Purpose |
 |-------|-------|---------|
 | `interactionCreate` | 24-44 | Handles slash command execution with deferred replies |
-| `messageCreate` | 47-64 | Handles mention-based invocation (quote creation or chat) |
+| `messageCreate` | 47-64 | Handles mention-based invocation (quote creation via `@pookiesoft/bongbot-quote` or chat) |
 | `clientReady` | 67-80 | Registers commands with Discord API, sets presence, initializes TikTok notifier |
 
 ### 1.3 Command Structure
@@ -155,7 +155,7 @@ Centralized configuration object with:
 ```typescript
 const config = {
     discord: { apikey },
-    apis: { quotedb, google, openai, googleai },
+    apis: { google, openai, googleai },
     media: { file_root: process.env.JEST_WORKER_ID ? './src/' : './dist/' }
 };
 ```
