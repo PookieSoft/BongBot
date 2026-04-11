@@ -11,7 +11,8 @@
     },
     "dependencies": {
         "@pookiesoft/bongbot-core": "^1.4.4",
-        "@pookiesoft/bongbot-ptero": "^1.4.0"
+        "@pookiesoft/bongbot-ptero": "^1.4.0",
+        "@pookiesoft/bongbot-quote": "^1.0.1"
     },
     "devDependencies": {
         "@google/generative-ai": "^0.24.1",
