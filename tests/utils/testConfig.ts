@@ -75,21 +75,8 @@ const MOCK_CONFIGS: MockConfigs = {
         }))
     })),
     
-    quoteBuilder: () => jest.mock('../../src/helpers/quoteBuilder', () => ({
-        QuoteBuilder: jest.fn().mockImplementation(() => ({
-            setTitle: jest.fn().mockReturnThis(),
-            addQuotes: jest.fn().mockReturnThis(),
-            build: jest.fn().mockReturnValue('Mocked Quote Embed')
-        }))
-    })),
-    
     config: (configOverrides = {}) => jest.mock('../../src/config/index.js', () => ({
         apis: {
-            quotedb: {
-                url: "https://quotes.elmu.dev",
-                apikey: "mock_api_key", 
-                user_id: "mock_user_id"
-            },
             openai: {
                 active: true,
                 url: "https://api.openai.com",

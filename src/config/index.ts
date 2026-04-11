@@ -3,11 +3,6 @@ const config = {
         apikey: process.env.DISCORD_API_KEY || null
     },
     apis: {
-        quotedb: {
-            url: "https://quotes.elmu.dev",
-            apikey: process.env.QUOTEDB_API_KEY || null,
-            user_id: process.env.QUOTEDB_USER_ID || null
-        },
         google: {
             url: "https://www.googleapis.com",
             apikey: process.env.GOOGLE_API_KEY || null,

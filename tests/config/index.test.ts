@@ -20,8 +20,6 @@ describe('config/index.js', () => {
 
     test('should load configuration values from process.env when set', async () => {
         process.env.DISCORD_API_KEY = 'mock_discord_key';
-        process.env.QUOTEDB_API_KEY = 'mock_quotedb_key';
-        process.env.QUOTEDB_USER_ID = 'mock_quotedb_user_id';
         process.env.GOOGLE_API_KEY = 'mock_google_key';
         process.env.GOOGLE_CX = 'mock_google_cx';
         process.env.OPENAI_ACTIVE = 'true';
@@ -35,9 +33,6 @@ describe('config/index.js', () => {
         const { default: config } = await import('../../src/config/index.js');
 
         expect(config.discord.apikey).toBe('mock_discord_key');
-        expect(config.apis.quotedb.url).toBe('https://quotes.elmu.dev');
-        expect(config.apis.quotedb.apikey).toBe('mock_quotedb_key');
-        expect(config.apis.quotedb.user_id).toBe('mock_quotedb_user_id');
         expect(config.apis.google.url).toBe('https://www.googleapis.com');
         expect(config.apis.google.apikey).toBe('mock_google_key');
         expect(config.apis.google.cx).toBe('mock_google_cx');
@@ -54,8 +49,6 @@ describe('config/index.js', () => {
     test('should use default values when environment variables are not set', async () => {
         // Ensure relevant env vars are undefined
         delete process.env.DISCORD_API_KEY;
-        delete process.env.QUOTEDB_API_KEY;
-        delete process.env.QUOTEDB_USER_ID;
         delete process.env.GOOGLE_API_KEY;
         delete process.env.GOOGLE_CX;
         delete process.env.OPENAI_ACTIVE;
@@ -69,9 +62,6 @@ describe('config/index.js', () => {
         const { default: config } = await import('../../src/config/index.js');
 
         expect(config.discord.apikey).toBe(null);
-        expect(config.apis.quotedb.url).toBe('https://quotes.elmu.dev');
-        expect(config.apis.quotedb.apikey).toBe(null);
-        expect(config.apis.quotedb.user_id).toBe(null);
         expect(config.apis.google.url).toBe('https://www.googleapis.com');
         expect(config.apis.google.apikey).toBe(null);
         expect(config.apis.google.cx).toBe(null);

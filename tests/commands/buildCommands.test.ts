@@ -1,7 +1,7 @@
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import { Collection } from 'discord.js';
 import type { ExtendedClient } from '@pookiesoft/bongbot-core';
-const commandCount = 30;
+const commandCount = 28;
 jest.unstable_mockModule('@pookiesoft/bongbot-core', () => ({
     commandBuilder: jest.fn((client: ExtendedClient, commands: any[]) => {
         commands.forEach(cmd => client.commands.set(cmd.data.name, cmd));
@@ -69,15 +69,6 @@ jest.unstable_mockModule('../../src/commands/ping.js', () => ({
 jest.unstable_mockModule('../../src/commands/polka.js', () => ({
     default: { data: { name: 'polka', toJSON: () => ({ name: 'polka' }) } }
 }));
-jest.unstable_mockModule('../../src/commands/quotedb_get.js', () => ({
-    default: { data: { name: 'quotedb_get', toJSON: () => ({ name: 'quotedb_get' }) } }
-}));
-jest.unstable_mockModule('../../src/commands/quotedb_get_random.js', () => ({
-    default: { data: { name: 'quotedb_get_random', toJSON: () => ({ name: 'quotedb_get_random' }) } }
-}));
-jest.unstable_mockModule('../../src/commands/quotedb_post.js', () => ({
-    default: { data: { name: 'quotedb_post', toJSON: () => ({ name: 'quotedb_post' }) } }
-}));
 jest.unstable_mockModule('../../src/commands/roll.js', () => ({
     default: { data: { name: 'roll', toJSON: () => ({ name: 'roll' }) } }
 }));
@@ -100,6 +91,11 @@ jest.unstable_mockModule('../../src/commands/you.js', () => ({
 // Mock bongbot-ptero to avoid loading native dependencies
 jest.unstable_mockModule('@pookiesoft/bongbot-ptero', () => ({
     pterodactyl: { data: { name: 'pterodactyl', toJSON: () => ({ name: 'pterodactyl' }) } }
+}));
+
+// Mock bongbot-quote package
+jest.unstable_mockModule('@pookiesoft/bongbot-quote', () => ({
+    quotedb: { data: { name: 'quote', toJSON: () => ({ name: 'quote' }) } }
 }));
 
 // Import after mocks are set up

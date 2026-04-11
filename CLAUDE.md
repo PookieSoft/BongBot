@@ -3,7 +3,7 @@
 # Project: BongBot
 
 ## Project Description
-A Discord Bot built on NodeJS in TypeScript. Contains several functions, including an ai chatbot, a quote API and others.
+A Discord Bot built on NodeJS in TypeScript. Contains several functions, including an ai chatbot and others. The quote functionality is provided by the external `@pookiesoft/bongbot-quote` package.
 
 ## Tech Stack:
 - Bot: TypeScript
@@ -99,7 +99,6 @@ For tests requiring custom handlers, import `setupServer` from `msw/node` and cr
 - `caller.ts`: HTTP client wrapper for external APIs
 - `errorBuilder.ts`: Standardized error response formatting
 - `embedBuilder.ts`: Discord embed construction utilities
-- `quoteBuilder.ts`: Quote-specific embed formatting
 
 ## TODO
 - Replace duplicated helpers/utilities (e.g. caller, errorBuilder, embedBuilder) with imports from the `bongbot-core` package, which already provides these shared modules.
