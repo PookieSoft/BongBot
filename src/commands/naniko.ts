@@ -1,10 +1,14 @@
-import { TikTokLiveConnection } from 'tiktok-live-connector';
 import { ExtendedClient } from '../helpers/interfaces.js';
 import { EmbedBuilder, Colors } from 'discord.js';
 import cron from 'node-schedule';
 
 interface Logger {
     log(message: string | Error): void;
+}
+
+interface ProfileData {
+    isLive: boolean;
+    avatarUrl: string | null;
 }
 
 export default class TikTokLiveNotifier {
@@ -28,7 +32,6 @@ export default class TikTokLiveNotifier {
             return;
         }
 
-        // Validate and set configuration
         this.#config = this.#validateConfig();
         this.#tiktokUsername = tiktokUsername;
         this.#channels = process.env.TIKTOK_LIVE_CHANNEL_IDS?.split(',').filter(id => id.trim());
@@ -36,10 +39,8 @@ export default class TikTokLiveNotifier {
         this.#client = client;
         this.#dayCheck = new Map<string, boolean>();
 
-        // Build notification message
         const liveNotif = this.#buildNotificationMessage();
 
-        // Create embed card
         this.#card = new EmbedBuilder()
             .setTitle('🎵 Live Notification')
             .setColor(Colors.Purple)
@@ -51,7 +52,6 @@ export default class TikTokLiveNotifier {
                 iconURL: this.#client.user?.displayAvatarURL()
             });
 
-        // Schedule live check
         const cronPattern = `*/1 ${this.#config.liveStartTime}-${this.#config.liveEndTime} * * *`;
         cron.scheduleJob(cronPattern, () => {
             this.#checkLive();
@@ -97,9 +97,7 @@ export default class TikTokLiveNotifier {
     async #checkLive(): Promise<void> {
         const today: string = new Date().toLocaleDateString();
 
-        // Check if we've already processed today
         if (!this.#dayCheck!.has(today)) {
-            // Clear out map to prevent memory leaks over time
             this.#dayCheck!.clear();
             this.#dayCheck!.set(today, false);
         }
@@ -109,35 +107,21 @@ export default class TikTokLiveNotifier {
         }
 
         try {
-            // Check if user is live
-            const connector = new TikTokLiveConnection(this.#tiktokUsername!);
-            const state = await connector.connect().catch(e => {
-                if (!e.message?.includes("The requested user isn't online")) {
-                    throw e;
-                }
-                return null;
-            });
-
-            if (!state) {
+            const profile = await fetchProfileData(this.#tiktokUsername!);
+            if (!profile.isLive) {
                 return;
             }
 
             this.#dayCheck!.set(today, true);
 
-            // Validate channels
             if (!this.#channels || this.#channels.length === 0) {
                 throw new Error('No Channel IDs found in environment variable TIKTOK_LIVE_CHANNEL_IDS.');
             }
 
-            // Fetch avatar
-            const avatarUrl = await fetchAvatarFromProfile(this.#tiktokUsername!);
-            if (!avatarUrl) {
-                throw new Error('Failed to fetch avatar from TikTok profile.');
+            if (profile.avatarUrl) {
+                this.#card!.setThumbnail(profile.avatarUrl);
             }
 
-            this.#card!.setThumbnail(avatarUrl);
-
-            // Send notifications to all configured channels
             for (const channelId of this.#channels) {
                 await this.#sendToChannel(channelId);
             }
@@ -145,7 +129,7 @@ export default class TikTokLiveNotifier {
         } catch (err) {
             this.#logger!.log('Error occurred attempting to get Live Status');
             this.#logger!.log(err instanceof Error ? err : new Error(String(err)));
-            this.#dayCheck!.set(today, true); // Skip retries for today
+            this.#dayCheck!.set(today, true);
         }
     }
 
@@ -171,13 +155,7 @@ export default class TikTokLiveNotifier {
     }
 }
 
-/**
- * Fetches the streamer's avatar from their public TikTok profile page.
- * Scrapes embedded JSON data that TikTok includes in the HTML.
- * @param username TikTok username without @ symbol
- * @returns Avatar URL or null if fetch fails
- */
-async function fetchAvatarFromProfile(username: string): Promise<string | null> {
+async function fetchProfileData(username: string): Promise<ProfileData> {
     try {
         const controller = new AbortController();
         /* istanbul ignore next -- @preserve timeout callback only fires if fetch takes >5s */
@@ -193,26 +171,26 @@ async function fetchAvatarFromProfile(username: string): Promise<string | null> 
         clearTimeout(timeout);
 
         if (!response.ok) {
-            return null;
+            return { isLive: false, avatarUrl: null };
         }
 
         const html = await response.text();
 
-        // Extract embedded JSON data from the script tag
         const scriptMatch = html.match(/<script[^>]*id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>(.*?)<\/script>/s);
         if (!scriptMatch) {
-            return null;
+            return { isLive: false, avatarUrl: null };
         }
 
         const data = JSON.parse(scriptMatch[1]);
+        const userDetail = data?.__DEFAULT_SCOPE__?.['webapp.user-detail'];
+        const user = userDetail?.userInfo?.user;
 
-        // Navigate to avatar URL in the embedded data structure
-        const avatarLarger = data?.__DEFAULT_SCOPE__?.['webapp.user-detail']?.userInfo?.user?.avatarLarger;
-        const avatarMedium = data?.__DEFAULT_SCOPE__?.['webapp.user-detail']?.userInfo?.user?.avatarMedium;
+        const avatarUrl = user?.avatarLarger ?? user?.avatarMedium ?? null;
+        const roomId = user?.roomId;
+        const isLive = !!roomId && roomId !== '0';
 
-        return avatarLarger ?? avatarMedium ?? null;
-    } catch (error) {
-        // Silent fail - caller will handle missing avatar
-        return null;
+        return { isLive, avatarUrl };
+    } catch {
+        return { isLive: false, avatarUrl: null };
     }
 }
