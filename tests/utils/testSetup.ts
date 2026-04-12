@@ -9,9 +9,7 @@ import { jest } from '@jest/globals';
  * Should be called in describe block of tests that need MSW
  */
 const setupMSWServer = () => {
-    beforeAll(() => server.listen());
     afterEach(() => server.resetHandlers());
-    afterAll(() => server.close());
 };
 
 /**
