@@ -83,6 +83,14 @@ BongBot is a Discord Bot made for fun with various different commands. BongBot l
 | `GOOGLEAI_IMAGE_MODEL` | ❌ | Google AI image model (default: gemini-2.5-flash-image-preview) |
 | `QUOTEDB_API_KEY` | ❌ | QuoteDB API key for quote management |
 | `QUOTEDB_USER_ID` | ❌ | QuoteDB user ID |
+| `TZ` | ❌ | Timezone for the Docker container (default: UTC, e.g. `Europe/London`) |
+| `TIKTOK_USERNAME` | ❌ | TikTok username to monitor for live status |
+| `TIKTOK_LIVE_CHANNEL_IDS` | ❌ | Comma-separated Discord channel IDs for live notifications |
+| `LIVE_DISPLAY_NAME` | ❌ | Display name shown in the live notification embed |
+| `LIVE_START_TIME` | ❌ | Hour to start checking for live status (0-23, default: 15) |
+| `LIVE_END_TIME` | ❌ | Hour to stop checking for live status (0-23, default: 18) |
+| `TWITCH_STREAM` | ❌ | Include Twitch link in notification (true/false) |
+| `TWITCH_USERNAME` | ❌ | Twitch username for the stream link |
 
 ## Available Commands
 
