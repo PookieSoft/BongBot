@@ -24,6 +24,8 @@ export default class TikTokLiveNotifier {
         liveEndTime: string;
         twitchStream?: string;
         twitchUsername?: string;
+        instaStream?: string;
+        instaUsername?: string;
     };
 
     constructor(client: ExtendedClient, logger: Logger) {
@@ -83,15 +85,22 @@ export default class TikTokLiveNotifier {
             liveEndTime,
             twitchStream: process.env.TWITCH_STREAM,
             twitchUsername: process.env.TWITCH_USERNAME,
+            instaStream: process.env.INSTA_STREAM,
+            instaUsername: process.env.INSTA_USERNAME
         };
     }
 
     #buildNotificationMessage(): string {
-        const tiktokLink = `[TikTok](https://www.tiktok.com/@${this.#tiktokUsername!}/live)`;
-        const twitchLink = this.#config!.twitchStream
-            ? ` or [Twitch](https://www.twitch.tv/${this.#config!.twitchUsername})`
-            : '';
-        return `Watch on ${tiktokLink}${twitchLink} now!`;
+        const lives = [];
+        lives.push(`[TikTok](https://www.tiktok.com/@${this.#tiktokUsername!}/live)`);
+        if (this.#config!.twitchStream) {
+            lives.push(`[Twitch](https://www.twitch.tv/${this.#config!.twitchUsername})`);
+        }
+        if (this.#config!.instaStream) {
+            lives.push(`[Instagram](https://www.instagram.com/${this.#config!.instaUsername}/live)`);
+        }
+        const liveString = lives.join(', ').replace(/, ([^,]+)$/, ' or $1');
+        return `Watch on ${liveString} now!`;
     }
 
     async #checkLive(): Promise<void> {

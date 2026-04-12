@@ -84,6 +84,8 @@ describe('TikTokLiveNotifier', () => {
         delete process.env.TIKTOK_LIVE_CHANNEL_IDS;
         delete process.env.TWITCH_STREAM;
         delete process.env.TWITCH_USERNAME;
+        delete process.env.INSTA_STREAM;
+        delete process.env.INSTA_USERNAME;
 
         mockSetTitle.mockClear();
         mockSetColor.mockClear();
@@ -125,6 +127,8 @@ describe('TikTokLiveNotifier', () => {
         delete process.env.TIKTOK_LIVE_CHANNEL_IDS;
         delete process.env.TWITCH_STREAM;
         delete process.env.TWITCH_USERNAME;
+        delete process.env.INSTA_STREAM;
+        delete process.env.INSTA_USERNAME;
     });
 
     describe('constructor', () => {
@@ -244,6 +248,65 @@ describe('TikTokLiveNotifier', () => {
             expect(firstArg.value).toBeDefined();
             expect(firstArg.value).toContain('Twitch');
             expect(firstArg.value).toContain('undefined');
+        });
+
+        test('should not include Instagram link when INSTA_STREAM is not set', () => {
+            process.env.TIKTOK_LIVE_CHANNEL_IDS = '123456789';
+
+            mockAddFields.mockClear();
+
+            notifier = new TikTokLiveNotifier(mockClient, mockLogger);
+
+            expect(mockAddFields).toHaveBeenCalled();
+            const firstArg = mockAddFields.mock.calls[0][0] as any;
+            expect(firstArg.value).not.toContain('Instagram');
+        });
+
+        test('should include Instagram link when INSTA_STREAM is set', () => {
+            process.env.TIKTOK_LIVE_CHANNEL_IDS = '123456789';
+            process.env.INSTA_STREAM = 'true';
+            process.env.INSTA_USERNAME = 'teststreamer';
+
+            mockAddFields.mockClear();
+
+            notifier = new TikTokLiveNotifier(mockClient, mockLogger);
+
+            expect(mockAddFields).toHaveBeenCalled();
+            const firstArg = mockAddFields.mock.calls[0][0] as any;
+            expect(firstArg.value).toContain('Instagram');
+            expect(firstArg.value).toContain('teststreamer');
+        });
+
+        test('should handle INSTA_STREAM set but INSTA_USERNAME undefined', () => {
+            process.env.TIKTOK_LIVE_CHANNEL_IDS = '123456789';
+            process.env.INSTA_STREAM = 'true';
+
+            mockAddFields.mockClear();
+
+            notifier = new TikTokLiveNotifier(mockClient, mockLogger);
+
+            expect(mockAddFields).toHaveBeenCalled();
+            const firstArg = mockAddFields.mock.calls[0][0] as any;
+            expect(firstArg.value).toContain('Instagram');
+            expect(firstArg.value).toContain('undefined');
+        });
+
+        test('should format message with all platforms using or before last', () => {
+            process.env.TIKTOK_LIVE_CHANNEL_IDS = '123456789';
+            process.env.TWITCH_STREAM = 'true';
+            process.env.TWITCH_USERNAME = 'testtwitch';
+            process.env.INSTA_STREAM = 'true';
+            process.env.INSTA_USERNAME = 'testinsta';
+
+            mockAddFields.mockClear();
+
+            notifier = new TikTokLiveNotifier(mockClient, mockLogger);
+
+            const firstArg = mockAddFields.mock.calls[0][0] as any;
+            expect(firstArg.value).toContain('TikTok');
+            expect(firstArg.value).toContain('Twitch');
+            expect(firstArg.value).toContain('Instagram');
+            expect(firstArg.value).toMatch(/Twitch.+or.+Instagram/);
         });
 
         test('should schedule cron job', () => {
