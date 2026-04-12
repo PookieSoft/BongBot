@@ -91,6 +91,8 @@ BongBot is a Discord Bot made for fun with various different commands. BongBot l
 | `LIVE_END_TIME` | ❌ | Hour to stop checking for live status (0-23, default: 18) |
 | `TWITCH_STREAM` | ❌ | Include Twitch link in notification (true/false) |
 | `TWITCH_USERNAME` | ❌ | Twitch username for the stream link |
+| `INSTA_STREAM` | ❌ | Include Instagram Live link in notification (true/false) |
+| `INSTA_USERNAME` | ❌ | Instagram username for the live link |
 
 ## Available Commands
 
