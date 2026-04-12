@@ -157,7 +157,11 @@ export default class TikTokLiveNotifier {
             }
 
             this.#card!.setTimestamp();
-            await channel.send({ embeds: [this.#card!] });
+            await channel.send({
+                content: '@everyone',
+                embeds: [this.#card!],
+                allowedMentions: { parse: ['everyone'] }
+            });
         } catch (err) {
             this.#logger!.log(`Error sending to channel ${channelId}: ${err instanceof Error ? err.message : String(err)}`);
         }

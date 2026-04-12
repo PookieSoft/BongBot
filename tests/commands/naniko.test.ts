@@ -659,6 +659,34 @@ describe('TikTokLiveNotifier', () => {
             expect(mockChannel.send).toHaveBeenCalledTimes(2);
         });
 
+        test('should send @everyone ping with notification', async () => {
+            process.env.TIKTOK_LIVE_CHANNEL_IDS = '123456789';
+
+            server.use(
+                http.get('https://www.tiktok.com/@pokenonii', () => {
+                    return HttpResponse.text(LIVE_PROFILE_HTML);
+                })
+            );
+
+            const mockChannel = {
+                isTextBased: jest.fn(() => true),
+                send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
+            };
+
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+
+            notifier = new TikTokLiveNotifier(mockClient, mockLogger);
+            const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
+
+            await callback();
+            await new Promise(resolve => setImmediate(resolve));
+
+            expect(mockChannel.send).toHaveBeenCalledWith(expect.objectContaining({
+                content: '@everyone',
+                allowedMentions: { parse: ['everyone'] },
+            }));
+        });
+
         test('should log error when no channel IDs configured', async () => {
             delete process.env.TIKTOK_LIVE_CHANNEL_IDS;
 
