@@ -19,7 +19,7 @@
         "@types/better-sqlite3": "^7.6.13",
         "@types/jest": "^30.0.0",
         "@types/node-schedule": "^2.1.8",
-        "better-sqlite3": "^12.8.0",
+        "better-sqlite3": "^12.9.0",
         "cross-env": "^10.1.0",
         "discord.js": "^14.26.3",
         "esbuild": "^0.28.0",
