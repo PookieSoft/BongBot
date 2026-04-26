@@ -24,7 +24,7 @@
         "discord.js": "^14.26.3",
         "esbuild": "^0.28.0",
         "jest": "^30.3.0",
-        "jest-junit": "^16.0.0",
+        "jest-junit": "^17.0.0",
         "msw": "^2.13.4",
         "node-schedule": "^2.1.1",
         "source-map-support": "^0.5.21",
