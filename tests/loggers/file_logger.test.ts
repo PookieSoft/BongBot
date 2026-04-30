@@ -165,7 +165,9 @@ describe('FileLogger', () => {
                 expect.any(String),
                 expect.stringContaining('Stack Trace: Error stack trace')
             );
-            expect(consoleErrorSpy).toHaveBeenCalledWith(`${mockFormattedDateTime} | An Error Occurred - check logs for details.`);
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                `${mockFormattedDateTime} | An Error Occurred - check logs for details.`
+            );
         });
 
         it('should handle error without stack', () => {

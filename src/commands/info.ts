@@ -1,12 +1,10 @@
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
-import { generateCard } from '@pookiesoft/bongbot-core'; 
+import { generateCard } from '@pookiesoft/bongbot-core';
 import { buildError } from '../helpers/errorBuilder.js';
 import type { ExtendedClient } from '@pookiesoft/bongbot-core';
 
 export default {
-    data: new SlashCommandBuilder()
-        .setName('info')
-        .setDescription('Get BongBot Info Card'),
+    data: new SlashCommandBuilder().setName('info').setDescription('Get BongBot Info Card'),
     async execute(interaction: CommandInteraction, client: ExtendedClient) {
         try {
             const embed = await generateCard(client);
@@ -17,6 +15,6 @@ export default {
     },
     fullDesc: {
         options: [],
-        description: "Get Infocard for BongBot"
-    }
-}
+        description: 'Get Infocard for BongBot',
+    },
+};

@@ -1,6 +1,6 @@
 /**
  * Command Structure Test Utilities
- * 
+ *
  * Provides standardized tests for Discord slash command structure validation.
  * Eliminates duplication across command test files.
  */
@@ -45,12 +45,12 @@ function testCommandStructure(command: Command, expectedName: string, descriptio
  */
 function testGoogleSearchCommand(command: Command, expectedName: string) {
     testCommandStructure(command, expectedName);
-    
+
     describe('Google Search command behavior', () => {
         test('should use googleSearch helper', () => {
             expect(require('../../src/helpers/googleSearch.js')).toBeDefined();
         });
-        
+
         test('should handle search errors with ERROR_BUILDER', () => {
             expect(require('../../src/helpers/errorBuilder.js')).toBeDefined();
         });
@@ -64,7 +64,7 @@ function testGoogleSearchCommand(command: Command, expectedName: string) {
  */
 function testEmbedCommand(command: Command, expectedName: string) {
     testCommandStructure(command, expectedName);
-    
+
     describe('Embed command behavior', () => {
         test('should use EMBED_BUILDER helper', () => {
             expect(require('../../src/helpers/embedBuilder.js')).toBeDefined();
@@ -74,26 +74,21 @@ function testEmbedCommand(command: Command, expectedName: string) {
 
 /**
  * Test Info Card command pattern (extends standard structure)
- * @param {Object} command - The command module to test  
+ * @param {Object} command - The command module to test
  * @param {string} expectedName - Expected command name
  */
 function testInfoCardCommand(command: Command, expectedName: string) {
     testCommandStructure(command, expectedName);
-    
+
     describe('Info Card command behavior', () => {
         test('should use infoCard helper', () => {
             expect(require('@pookiesoft/bongbot-core')).toBeDefined();
         });
-        
+
         test('should handle errors with ERROR_BUILDER', () => {
             expect(require('../../src/helpers/errorBuilder.js')).toBeDefined();
         });
     });
 }
 
-export {
-    testCommandStructure,
-    testGoogleSearchCommand, 
-    testEmbedCommand,
-    testInfoCardCommand
-};
+export { testCommandStructure, testGoogleSearchCommand, testEmbedCommand, testInfoCardCommand };

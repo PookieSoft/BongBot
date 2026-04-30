@@ -30,86 +30,93 @@ BongBot is a Discord Bot made for fun with various different commands. BongBot l
 ### Running the Bot
 
 1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/PookieSoft/BongBot.git
-   cd BongBot
-   ```
+
+    ```bash
+    git clone https://github.com/PookieSoft/BongBot.git
+    cd BongBot
+    ```
 
 2. **Configure environment variables**:
    Copy the example environment file and update it with your credentials:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and add your Discord bot token and other API keys:
-   ```env
-   DISCORD_API_KEY=your_discord_bot_token_here
-   DISCORD_CHANNEL_ID=your_channel_id_here
-   # Add other API keys as needed
-   ```
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Edit `.env` and add your Discord bot token and other API keys:
+
+    ```env
+    DISCORD_API_KEY=your_discord_bot_token_here
+    DISCORD_CHANNEL_ID=your_channel_id_here
+    # Add other API keys as needed
+    ```
 
 3. **Run with Docker**:
-   ```bash
-   # Build and run the container
-   docker build . -t bongbot
-   docker run --env-file .env bongbot
-   ```
 
-   Or use the pre-built image:
-   ```bash
-   # Dev Build
-   docker run --env-file .env mirasi/bongbot-develop:latest
-   ```
-   ```bash
-   # Release Build
-   docker run --env-file .env mirasi/bongbot:latest
-   ```
-   **It is recommended you use docker for local development.**
+    ```bash
+    # Build and run the container
+    docker build . -t bongbot
+    docker run --env-file .env bongbot
+    ```
+
+    Or use the pre-built image:
+
+    ```bash
+    # Dev Build
+    docker run --env-file .env mirasi/bongbot-develop:latest
+    ```
+
+    ```bash
+    # Release Build
+    docker run --env-file .env mirasi/bongbot:latest
+    ```
+
+    **It is recommended you use docker for local development.**
 
 ## Environment Configuration
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DISCORD_API_KEY` | ✅ | Your Discord bot token |
-| `DISCORD_CHANNEL_ID` | ✅ | Default channel ID for info card on bot launch |
-| `GOOGLE_API_KEY` | ❌ | Google API key for search functionality |
-| `GOOGLE_CX` | ❌ | Google Custom Search Engine ID |
-| `OPENAI_API_KEY` | ❌ | OpenAI API key for GPT models |
-| `OPENAI_ACTIVE` | ❌ | Enable/disable OpenAI integration (true/false) |
-| `OPENAI_MODEL` | ❌ | OpenAI model to use (default: gpt-4o) |
-| `GOOGLEAI_API_KEY` | ❌ | Google AI API key for Gemini models |
-| `GOOGLEAI_ACTIVE` | ❌ | Enable/disable Google AI integration (true/false) |
-| `GOOGLEAI_MODEL` | ❌ | Google AI model to use (default: gemini-2.5-flash-lite) |
-| `GOOGLEAI_IMAGE_MODEL` | ❌ | Google AI image model (default: gemini-2.5-flash-image-preview) |
-| `QUOTEDB_API_KEY` | ❌ | QuoteDB API key for quote management |
-| `QUOTEDB_USER_ID` | ❌ | QuoteDB user ID |
-| `TZ` | ❌ | Timezone for the Docker container (default: UTC, e.g. `Europe/London`) |
-| `TIKTOK_USERNAME` | ❌ | TikTok username to monitor for live status |
-| `TIKTOK_LIVE_CHANNEL_IDS` | ❌ | Comma-separated Discord channel IDs for live notifications |
-| `LIVE_DISPLAY_NAME` | ❌ | Display name shown in the live notification embed |
-| `LIVE_START_TIME` | ❌ | Hour to start checking for live status (0-23, default: 15) |
-| `LIVE_END_TIME` | ❌ | Hour to stop checking for live status (0-23, default: 18) |
-| `TWITCH_STREAM` | ❌ | Include Twitch link in notification (true/false) |
-| `TWITCH_USERNAME` | ❌ | Twitch username for the stream link |
-| `INSTA_STREAM` | ❌ | Include Instagram Live link in notification (true/false) |
-| `INSTA_USERNAME` | ❌ | Instagram username for the live link |
+| Variable                  | Required | Description                                                            |
+| ------------------------- | -------- | ---------------------------------------------------------------------- |
+| `DISCORD_API_KEY`         | ✅       | Your Discord bot token                                                 |
+| `DISCORD_CHANNEL_ID`      | ✅       | Default channel ID for info card on bot launch                         |
+| `GOOGLE_API_KEY`          | ❌       | Google API key for search functionality                                |
+| `GOOGLE_CX`               | ❌       | Google Custom Search Engine ID                                         |
+| `OPENAI_API_KEY`          | ❌       | OpenAI API key for GPT models                                          |
+| `OPENAI_ACTIVE`           | ❌       | Enable/disable OpenAI integration (true/false)                         |
+| `OPENAI_MODEL`            | ❌       | OpenAI model to use (default: gpt-4o)                                  |
+| `GOOGLEAI_API_KEY`        | ❌       | Google AI API key for Gemini models                                    |
+| `GOOGLEAI_ACTIVE`         | ❌       | Enable/disable Google AI integration (true/false)                      |
+| `GOOGLEAI_MODEL`          | ❌       | Google AI model to use (default: gemini-2.5-flash-lite)                |
+| `GOOGLEAI_IMAGE_MODEL`    | ❌       | Google AI image model (default: gemini-2.5-flash-image-preview)        |
+| `QUOTEDB_API_KEY`         | ❌       | QuoteDB API key for quote management                                   |
+| `QUOTEDB_USER_ID`         | ❌       | QuoteDB user ID                                                        |
+| `TZ`                      | ❌       | Timezone for the Docker container (default: UTC, e.g. `Europe/London`) |
+| `TIKTOK_USERNAME`         | ❌       | TikTok username to monitor for live status                             |
+| `TIKTOK_LIVE_CHANNEL_IDS` | ❌       | Comma-separated Discord channel IDs for live notifications             |
+| `LIVE_DISPLAY_NAME`       | ❌       | Display name shown in the live notification embed                      |
+| `LIVE_START_TIME`         | ❌       | Hour to start checking for live status (0-23, default: 15)             |
+| `LIVE_END_TIME`           | ❌       | Hour to stop checking for live status (0-23, default: 18)              |
+| `TWITCH_STREAM`           | ❌       | Include Twitch link in notification (true/false)                       |
+| `TWITCH_USERNAME`         | ❌       | Twitch username for the stream link                                    |
+| `INSTA_STREAM`            | ❌       | Include Instagram Live link in notification (true/false)               |
+| `INSTA_USERNAME`          | ❌       | Instagram username for the live link                                   |
 
 ## Available Commands
 
 - `/help` - Display available commands
 - `/ping` - Check bot responsiveness
-- `/chat <message>` - Chat with AI (Google AI or OpenAI)*
+- `/chat <message>` - Chat with AI (Google AI or OpenAI)\*
 - `/userinfo [@user]` - Get user information
 - `/info` - Get bot and server information
-- `/create_quote <quote> <author>` - Add a new quote**
+- `/create_quote <quote> <author>` - Add a new quote\*\*
 - `/get_quotes <amount>` - Get the most recent quotes
 - `/get_random_quotes <amount>` - Get random quotes
 - Media commands: `/arab`, `/callirap`, `/cherry`, `/classic`, `/club_kid`, `/creeper`, `/cringe`, `/dance`, `/die`, `/fubuki`, `/funk`, `/hentai`, `/hoe`, `/mirasi`, `/no`, `/polka`, `/roll`, `/seachicken`, `/vape`, `/yes`, `/you`
-  
+
 \* This command can be invoked by pinging the bot with a message instead of using the slash command.
 
-** This command can be invoked by replying to the message and pinging the bot with no message. This will pull the author from the user's display name and the quote from the replied to message. Adding a message will trigger the /chat feature instead.
-  
+\*\* This command can be invoked by replying to the message and pinging the bot with no message. This will pull the author from the user's display name and the quote from the replied to message. Adding a message will trigger the /chat feature instead.
+
 ## Contributing
 
 1. Fork the repository

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Shared utilities for command testing to eliminate code duplication
  */
-import { Command } from "./interfaces.js";
+import { Command } from './interfaces.js';
 import { jest } from '@jest/globals';
 import fs from 'fs';
 jest.mock('fs');
@@ -13,9 +13,9 @@ const mockErrorBuilder = () => {
                 embeds: [],
                 files: [],
                 flags: 64,
-                isError: true
+                isError: true,
             };
-        })
+        }),
     }));
 };
 
@@ -82,7 +82,7 @@ const setupMediaCommandTest = async (commandName: string, filename: string, modu
     // Setup mocks
     mockErrorBuilder();
 
-    const command = await import(`../../src/commands/${moduleName}`).then(mod => mod.default);
+    const command = await import(`../../src/commands/${moduleName}`).then((mod) => mod.default);
     describe(`${commandName} command`, () => {
         testCommandStructure(command, commandName);
         testMediaCommand(command, filename);
@@ -90,8 +90,8 @@ const setupMediaCommandTest = async (commandName: string, filename: string, modu
 };
 
 interface MockInteractionOptions {
-  commandName?: string;
-  // Add other optional properties that can be passed in options if needed
+    commandName?: string;
+    // Add other optional properties that can be passed in options if needed
 }
 
 /**
@@ -146,5 +146,5 @@ export {
     testMediaCommand,
     setupMediaCommandTest,
     createMockInteraction,
-    createMockClient
+    createMockClient,
 };

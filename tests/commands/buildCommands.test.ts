@@ -4,98 +4,98 @@ import type { ExtendedClient } from '@pookiesoft/bongbot-core';
 const commandCount = 28;
 jest.unstable_mockModule('@pookiesoft/bongbot-core', () => ({
     commandBuilder: jest.fn((client: ExtendedClient, commands: any[]) => {
-        commands.forEach(cmd => client.commands.set(cmd.data.name, cmd));
-        return commands.map(cmd => cmd.data.toJSON());
+        commands.forEach((cmd) => client.commands.set(cmd.data.name, cmd));
+        return commands.map((cmd) => cmd.data.toJSON());
     }),
 }));
 // Mock all command modules
 jest.unstable_mockModule('../../src/commands/arab.js', () => ({
-    default: { data: { name: 'arab', toJSON: () => ({ name: 'arab' }) } }
+    default: { data: { name: 'arab', toJSON: () => ({ name: 'arab' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/callirap.js', () => ({
-    default: { data: { name: 'callirap', toJSON: () => ({ name: 'callirap' }) } }
+    default: { data: { name: 'callirap', toJSON: () => ({ name: 'callirap' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/chat_ai.js', () => ({
-    default: { data: { name: 'chat_ai', toJSON: () => ({ name: 'chat_ai' }) } }
+    default: { data: { name: 'chat_ai', toJSON: () => ({ name: 'chat_ai' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/cherry.js', () => ({
-    default: { data: { name: 'cherry', toJSON: () => ({ name: 'cherry' }) } }
+    default: { data: { name: 'cherry', toJSON: () => ({ name: 'cherry' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/classic.js', () => ({
-    default: { data: { name: 'classic', toJSON: () => ({ name: 'classic' }) } }
+    default: { data: { name: 'classic', toJSON: () => ({ name: 'classic' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/club_kid.js', () => ({
-    default: { data: { name: 'club_kid', toJSON: () => ({ name: 'club_kid' }) } }
+    default: { data: { name: 'club_kid', toJSON: () => ({ name: 'club_kid' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/creeper.js', () => ({
-    default: { data: { name: 'creeper', toJSON: () => ({ name: 'creeper' }) } }
+    default: { data: { name: 'creeper', toJSON: () => ({ name: 'creeper' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/cringe.js', () => ({
-    default: { data: { name: 'cringe', toJSON: () => ({ name: 'cringe' }) } }
+    default: { data: { name: 'cringe', toJSON: () => ({ name: 'cringe' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/dance.js', () => ({
-    default: { data: { name: 'dance', toJSON: () => ({ name: 'dance' }) } }
+    default: { data: { name: 'dance', toJSON: () => ({ name: 'dance' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/die.js', () => ({
-    default: { data: { name: 'die', toJSON: () => ({ name: 'die' }) } }
+    default: { data: { name: 'die', toJSON: () => ({ name: 'die' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/fubuki.js', () => ({
-    default: { data: { name: 'fubuki', toJSON: () => ({ name: 'fubuki' }) } }
+    default: { data: { name: 'fubuki', toJSON: () => ({ name: 'fubuki' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/funk.js', () => ({
-    default: { data: { name: 'funk', toJSON: () => ({ name: 'funk' }) } }
+    default: { data: { name: 'funk', toJSON: () => ({ name: 'funk' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/help.js', () => ({
-    default: { data: { name: 'help', toJSON: () => ({ name: 'help' }) } }
+    default: { data: { name: 'help', toJSON: () => ({ name: 'help' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/hentai.js', () => ({
-    default: { data: { name: 'hentai', toJSON: () => ({ name: 'hentai' }) } }
+    default: { data: { name: 'hentai', toJSON: () => ({ name: 'hentai' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/hoe.js', () => ({
-    default: { data: { name: 'hoe', toJSON: () => ({ name: 'hoe' }) } }
+    default: { data: { name: 'hoe', toJSON: () => ({ name: 'hoe' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/info.js', () => ({
-    default: { data: { name: 'info', toJSON: () => ({ name: 'info' }) } }
+    default: { data: { name: 'info', toJSON: () => ({ name: 'info' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/mirasi.js', () => ({
-    default: { data: { name: 'mirasi', toJSON: () => ({ name: 'mirasi' }) } }
+    default: { data: { name: 'mirasi', toJSON: () => ({ name: 'mirasi' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/no.js', () => ({
-    default: { data: { name: 'no', toJSON: () => ({ name: 'no' }) } }
+    default: { data: { name: 'no', toJSON: () => ({ name: 'no' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/ping.js', () => ({
-    default: { data: { name: 'ping', toJSON: () => ({ name: 'ping' }) } }
+    default: { data: { name: 'ping', toJSON: () => ({ name: 'ping' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/polka.js', () => ({
-    default: { data: { name: 'polka', toJSON: () => ({ name: 'polka' }) } }
+    default: { data: { name: 'polka', toJSON: () => ({ name: 'polka' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/roll.js', () => ({
-    default: { data: { name: 'roll', toJSON: () => ({ name: 'roll' }) } }
+    default: { data: { name: 'roll', toJSON: () => ({ name: 'roll' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/seachicken.js', () => ({
-    default: { data: { name: 'seachicken', toJSON: () => ({ name: 'seachicken' }) } }
+    default: { data: { name: 'seachicken', toJSON: () => ({ name: 'seachicken' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/userinfo.js', () => ({
-    default: { data: { name: 'userinfo', toJSON: () => ({ name: 'userinfo' }) } }
+    default: { data: { name: 'userinfo', toJSON: () => ({ name: 'userinfo' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/vape.js', () => ({
-    default: { data: { name: 'vape', toJSON: () => ({ name: 'vape' }) } }
+    default: { data: { name: 'vape', toJSON: () => ({ name: 'vape' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/yes.js', () => ({
-    default: { data: { name: 'yes', toJSON: () => ({ name: 'yes' }) } }
+    default: { data: { name: 'yes', toJSON: () => ({ name: 'yes' }) } },
 }));
 jest.unstable_mockModule('../../src/commands/you.js', () => ({
-    default: { data: { name: 'you', toJSON: () => ({ name: 'you' }) } }
+    default: { data: { name: 'you', toJSON: () => ({ name: 'you' }) } },
 }));
 
 // Mock bongbot-ptero to avoid loading native dependencies
 jest.unstable_mockModule('@pookiesoft/bongbot-ptero', () => ({
-    pterodactyl: { data: { name: 'pterodactyl', toJSON: () => ({ name: 'pterodactyl' }) } }
+    pterodactyl: { data: { name: 'pterodactyl', toJSON: () => ({ name: 'pterodactyl' }) } },
 }));
 
 // Mock bongbot-quote package
 jest.unstable_mockModule('@pookiesoft/bongbot-quote', () => ({
-    quotedb: { data: { name: 'quote', toJSON: () => ({ name: 'quote' }) } }
+    quotedb: { data: { name: 'quote', toJSON: () => ({ name: 'quote' }) } },
 }));
 
 // Import after mocks are set up
@@ -112,20 +112,20 @@ describe('buildCommands', () => {
 
     test('should create a commands collection on the client', () => {
         buildCommands(mockClient);
-        
+
         expect(mockClient.commands).toBeInstanceOf(Collection);
     });
 
     test('should add all commands to the client commands collection', () => {
         buildCommands(mockClient);
-        
+
         // Should have commandCount commands based on the commandsArray
         expect(mockClient.commands?.size).toBe(commandCount);
     });
 
     test('should set commands with correct names as keys', () => {
         buildCommands(mockClient);
-        
+
         // Test a few command names
         expect(mockClient.commands?.has('ping')).toBe(true);
         expect(mockClient.commands?.has('help')).toBe(true);
@@ -135,16 +135,16 @@ describe('buildCommands', () => {
 
     test('should return an array of command data in JSON format', () => {
         const result = buildCommands(mockClient);
-        
+
         expect(Array.isArray(result)).toBe(true);
         expect(result.length).toBe(commandCount);
     });
 
     test('should return commands with name property', () => {
         const result = buildCommands(mockClient);
-        
+
         // Check that each command has a name
-        result.forEach(cmd => {
+        result.forEach((cmd) => {
             expect(cmd).toHaveProperty('name');
             expect(typeof cmd.name).toBe('string');
         });
@@ -152,7 +152,7 @@ describe('buildCommands', () => {
 
     test('should store command objects in the collection', () => {
         buildCommands(mockClient);
-        
+
         const pingCommand = mockClient.commands?.get('ping');
         expect(pingCommand).toBeDefined();
         expect(pingCommand).toHaveProperty('data');
@@ -162,7 +162,7 @@ describe('buildCommands', () => {
 
     test(`should handle all ${commandCount} commands without errors`, () => {
         expect(() => buildCommands(mockClient)).not.toThrow();
-        
+
         const result = buildCommands(mockClient);
         expect(result.length).toBe(commandCount);
     });

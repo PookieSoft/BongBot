@@ -5,11 +5,12 @@ import FileLogger from '../loggers/file_logger.js';
 export default {
     get default(): Logger {
         const loggerService = LoggerService.getInstance();
-        if (process.env.DEFAULT_LOGGER === 'file') return loggerService.getFileLogger(); /** use environment variable to switch loggers for local dev */
+        if (process.env.DEFAULT_LOGGER === 'file')
+            return loggerService.getFileLogger(); /** use environment variable to switch loggers for local dev */
         return loggerService.getDefaultLogger();
     },
-    /** 
-     * Legacy log function has been updated to use the new DefaultLogger so that code uses it implicitly. 
+    /**
+     * Legacy log function has been updated to use the new DefaultLogger so that code uses it implicitly.
      * Old code using LOGGER.log(error) will still work as expected, however it is recommended to use the new Logger interface directly.
      * New folder structure places loggers in src/loggers - if additional loggers are created, they should have get functions here.
      * This file is now intended to surface loggers, e.g. LOGGER.default, LOGGER.custom_logger, etc.
@@ -25,8 +26,8 @@ export default {
     /** Closes all logger connections. Useful for graceful shutdown or testing cleanup */
     closeAll() {
         LoggerService.getInstance().closeAll();
-    }
-}
+    },
+};
 
 class LoggerService {
     private static instance: LoggerService;
@@ -48,7 +49,7 @@ class LoggerService {
         return this.connections.get('default')!;
     }
 
-    getFileLogger (): Logger {
+    getFileLogger(): Logger {
         if (!this.connections.has('file')) {
             this.connections.set('file', new FileLogger());
         }

@@ -1,4 +1,3 @@
-
 import { http, HttpResponse } from 'msw';
 const mockBody = { name: 'test', value: 123 };
 
@@ -29,26 +28,29 @@ const handlers = [
             ],
         });
     }),
-    http.post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent', () => {
-        return HttpResponse.json({
-            candidates: [
-                {
-                    content: {
-                        parts: [
-                            {
-                                inlineData: {
-                                    data: 'test_image_data',
+    http.post(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent',
+        () => {
+            return HttpResponse.json({
+                candidates: [
+                    {
+                        content: {
+                            parts: [
+                                {
+                                    inlineData: {
+                                        data: 'test_image_data',
+                                    },
                                 },
-                            },
-                        ],
+                            ],
+                        },
                     },
-                },
-            ],
-        });
-    }),
+                ],
+            });
+        }
+    ),
     http.get('https://api.github.com/repos/Mirasii/BongBot/releases/latest', () => {
         return HttpResponse.json({
-            tag_name: 'v1.0.0'
+            tag_name: 'v1.0.0',
         });
     }),
     http.get('https://api.github.com/repos/Mirasii/BongBot/branches/main', () => {
@@ -59,13 +61,13 @@ const handlers = [
                     message: 'Test commit',
                     author: {
                         name: 'Test Author',
-                        date: new Date().toISOString()
-                    }
+                        date: new Date().toISOString(),
+                    },
                 },
                 author: {
-                    avatar_url: 'http://example.com/avatar.jpg'
-                }
-            }
+                    avatar_url: 'http://example.com/avatar.jpg',
+                },
+            },
         });
     }),
     http.get('http://test.com/api/data', ({ request }) => {
@@ -87,7 +89,7 @@ const handlers = [
     }),
     http.post('http://test.com/api/error', () => {
         return new HttpResponse('Internal Server Error', { status: 500, statusText: 'Internal Server Error' });
-    })
+    }),
 ];
 
 export { handlers, mockBody };

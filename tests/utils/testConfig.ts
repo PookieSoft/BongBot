@@ -10,88 +10,93 @@ const TEST_CONFIGS = {
     MEDIA_COMMAND: {
         mocks: ['fs', 'errorBuilder'],
         setupFunctions: ['mockFs', 'mockErrorBuilder'],
-        testTypes: ['structure', 'media']
+        testTypes: ['structure', 'media'],
     },
-    
+
     // Configuration for API commands (commands that make HTTP requests)
     API_COMMAND: {
         mocks: ['caller', 'errorBuilder'],
         setupFunctions: ['setupStandardTestEnvironment'],
-        testTypes: ['structure', 'api']
+        testTypes: ['structure', 'api'],
     },
-    
+
     // Configuration for simple commands (basic functionality)
     SIMPLE_COMMAND: {
         mocks: [],
         setupFunctions: ['setupMockCleanup'],
-        testTypes: ['structure']
+        testTypes: ['structure'],
     },
-    
+
     // Configuration for embed commands (commands that return embeds)
     EMBED_COMMAND: {
         mocks: ['embedBuilder'],
         setupFunctions: ['setupMockCleanup'],
-        testTypes: ['structure', 'embed']
-    }
+        testTypes: ['structure', 'embed'],
+    },
 };
 
 type MockFunction = () => void;
 type ConfigMockFunction = (configOverrides?: object) => void;
 
 interface MockConfigs {
-  [key: string]: MockFunction | ConfigMockFunction;
+    [key: string]: MockFunction | ConfigMockFunction;
 }
 
 /**
  * Common mock configurations to avoid repetitive mock setup
  */
 const MOCK_CONFIGS: MockConfigs = {
-    fs: () => jest.mock('fs', () => ({
-        readFileSync: jest.fn()
-    })),
-    
-    errorBuilder: () => jest.mock('../../src/helpers/errorBuilder', () => ({
-        buildError: jest.fn().mockResolvedValue({
-            embeds: [],
-            files: [],
-            flags: 64,
-            isError: true
-        }),
-        buildUnknownError: jest.fn()
-    })),
-    
-    caller: () => jest.mock('../../src/helpers/caller', () => ({
-        get: jest.fn(),
-        post: jest.fn()
-    })),
-    
-    embedBuilder: () => jest.mock('../../src/helpers/embedBuilder', () => ({
-        EMBED_BUILDER: jest.fn().mockImplementation(() => ({
-            constructEmbedWithRandomFile: jest.fn().mockReturnValue('mocked embed'),
-            constructEmbedWithAttachment: jest.fn().mockReturnValue({
-                addFooter: jest.fn().mockReturnThis(),
-                build: jest.fn().mockReturnValue('mocked embed with attachment'),
-            })
-        }))
-    })),
-    
-    config: (configOverrides = {}) => jest.mock('../../src/config/index.js', () => ({
-        apis: {
-            openai: {
-                active: true,
-                url: "https://api.openai.com",
-                apikey: "mock_openai_key",
-                model: "gpt-4o"
+    fs: () =>
+        jest.mock('fs', () => ({
+            readFileSync: jest.fn(),
+        })),
+
+    errorBuilder: () =>
+        jest.mock('../../src/helpers/errorBuilder', () => ({
+            buildError: jest.fn().mockResolvedValue({
+                embeds: [],
+                files: [],
+                flags: 64,
+                isError: true,
+            }),
+            buildUnknownError: jest.fn(),
+        })),
+
+    caller: () =>
+        jest.mock('../../src/helpers/caller', () => ({
+            get: jest.fn(),
+            post: jest.fn(),
+        })),
+
+    embedBuilder: () =>
+        jest.mock('../../src/helpers/embedBuilder', () => ({
+            EMBED_BUILDER: jest.fn().mockImplementation(() => ({
+                constructEmbedWithRandomFile: jest.fn().mockReturnValue('mocked embed'),
+                constructEmbedWithAttachment: jest.fn().mockReturnValue({
+                    addFooter: jest.fn().mockReturnThis(),
+                    build: jest.fn().mockReturnValue('mocked embed with attachment'),
+                }),
+            })),
+        })),
+
+    config: (configOverrides = {}) =>
+        jest.mock('../../src/config/index.js', () => ({
+            apis: {
+                openai: {
+                    active: true,
+                    url: 'https://api.openai.com',
+                    apikey: 'mock_openai_key',
+                    model: 'gpt-4o',
+                },
+                googleai: {
+                    active: false,
+                    url: 'https://generativelanguage.googleapis.com',
+                    apikey: 'mock_googleai_key',
+                    model: 'gemini-2.5-flash-lite',
+                },
+                ...configOverrides,
             },
-            googleai: {
-                active: false,
-                url: "https://generativelanguage.googleapis.com",
-                apikey: "mock_googleai_key",
-                model: "gemini-2.5-flash-lite"
-            },
-            ...configOverrides
-        }
-    }))
+        })),
 };
 
 /**
@@ -100,7 +105,7 @@ const MOCK_CONFIGS: MockConfigs = {
  * @param {Object} overrides - Override configurations for specific mocks
  */
 const setupMocks = (mockNames: Array<string>, overrides: MockConfigs = {}) => {
-    mockNames.forEach(mockName => {
+    mockNames.forEach((mockName) => {
         if (MOCK_CONFIGS[mockName]) {
             if (overrides[mockName]) {
                 overrides[mockName]();
@@ -126,5 +131,5 @@ module.exports = {
     TEST_CONFIGS,
     MOCK_CONFIGS,
     setupMocks,
-    getTestConfig
+    getTestConfig,
 };

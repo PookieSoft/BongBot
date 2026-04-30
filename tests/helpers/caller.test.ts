@@ -26,7 +26,7 @@ describe('caller helper', () => {
             const mockUrl = 'http://test.com';
             const mockPath = '/api/data';
             const mockParams = 'id=123';
-            const mockHeaders = { 'Authorization': 'Bearer token' };
+            const mockHeaders = { Authorization: 'Bearer token' };
 
             // Override default handler to verify headers
             server.use(
@@ -127,7 +127,7 @@ describe('caller helper', () => {
                 http.get('http://test.com/api/empty', () => {
                     return new HttpResponse('', {
                         status: 200,
-                        headers: { 'content-length': '0' }
+                        headers: { 'content-length': '0' },
                     });
                 })
             );

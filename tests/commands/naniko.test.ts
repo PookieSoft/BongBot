@@ -40,8 +40,10 @@ jest.unstable_mockModule('discord.js', () => ({
 
 const { default: TikTokLiveNotifier } = await import('../../src/commands/naniko.js');
 
-const LIVE_PROFILE_HTML = '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":"7607695933891218198"}}}}}</script>';
-const OFFLINE_PROFILE_HTML = '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":""}}}}}</script>';
+const LIVE_PROFILE_HTML =
+    '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":"7607695933891218198"}}}}}</script>';
+const OFFLINE_PROFILE_HTML =
+    '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":""}}}}}</script>';
 
 describe('TikTokLiveNotifier - without TIKTOK_USERNAME', () => {
     test('should return early if TIKTOK_USERNAME is not set', () => {
@@ -356,7 +358,10 @@ describe('TikTokLiveNotifier', () => {
 
             expect(notifier).toBeDefined();
             expect(mockSetFooter).toHaveBeenCalled();
-            const footerCall = mockSetFooter.mock.calls[mockSetFooter.mock.calls.length - 1][0] as { text: string; iconURL?: string };
+            const footerCall = mockSetFooter.mock.calls[mockSetFooter.mock.calls.length - 1][0] as {
+                text: string;
+                iconURL?: string;
+            };
             expect(footerCall.iconURL).toBeUndefined();
         });
     });
@@ -367,7 +372,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/large.jpg","roomId":"123456"}}}}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/large.jpg","roomId":"123456"}}}}}</script>'
+                    );
                 })
             );
 
@@ -376,13 +383,15 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockSetThumbnail).toHaveBeenCalledWith('https://example.com/large.jpg');
         });
@@ -392,7 +401,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarMedium":"https://example.com/medium.jpg","roomId":"123456"}}}}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarMedium":"https://example.com/medium.jpg","roomId":"123456"}}}}}</script>'
+                    );
                 })
             );
 
@@ -401,13 +412,15 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockSetThumbnail).toHaveBeenCalledWith('https://example.com/medium.jpg');
         });
@@ -426,7 +439,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -445,7 +458,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -464,7 +477,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -474,7 +487,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{}}</script>'
+                    );
                 })
             );
 
@@ -483,7 +498,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -493,7 +508,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{}}}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{}}}}</script>'
+                    );
                 })
             );
 
@@ -502,7 +519,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -521,7 +538,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).not.toHaveBeenCalled();
         });
@@ -531,7 +548,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":"0"}}}}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"avatarLarger":"https://example.com/avatar.jpg","roomId":"0"}}}}}</script>'
+                    );
                 })
             );
 
@@ -540,13 +559,15 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockChannel.send).not.toHaveBeenCalled();
         });
@@ -556,7 +577,9 @@ describe('TikTokLiveNotifier', () => {
 
             server.use(
                 http.get('https://www.tiktok.com/@pokenonii', () => {
-                    return HttpResponse.text('<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"roomId":"123456"}}}}}</script>');
+                    return HttpResponse.text(
+                        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"__DEFAULT_SCOPE__":{"webapp.user-detail":{"userInfo":{"user":{"roomId":"123456"}}}}}</script>'
+                    );
                 })
             );
 
@@ -565,14 +588,16 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             mockSetThumbnail.mockClear();
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockSetThumbnail).not.toHaveBeenCalled();
             expect(mockChannel.send).toHaveBeenCalled();
@@ -588,13 +613,15 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockChannel.send).not.toHaveBeenCalled();
             expect(mockLogger.log).not.toHaveBeenCalled();
@@ -614,20 +641,22 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockChannel.send).toHaveBeenCalledTimes(1);
 
             mockChannel.send.mockClear();
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockChannel.send).not.toHaveBeenCalled();
         });
@@ -646,13 +675,15 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockClient.channels.fetch).toHaveBeenCalledWith('123456789');
             expect(mockClient.channels.fetch).toHaveBeenCalledWith('987654321');
@@ -673,18 +704,22 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockResolvedValue({} as any),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
-            expect(mockChannel.send).toHaveBeenCalledWith(expect.objectContaining({
-                content: '@everyone',
-                allowedMentions: { parse: ['everyone'] },
-            }));
+            expect(mockChannel.send).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    content: '@everyone',
+                    allowedMentions: { parse: ['everyone'] },
+                })
+            );
         });
 
         test('should log error when no channel IDs configured', async () => {
@@ -702,11 +737,11 @@ describe('TikTokLiveNotifier', () => {
             mockLogger.log.mockClear();
 
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).toHaveBeenCalled();
             const logCalls = mockLogger.log.mock.calls;
-            const hasErrorMessage = logCalls.some(call => {
+            const hasErrorMessage = logCalls.some((call) => {
                 const arg = call[0];
                 if (typeof arg === 'string') {
                     return arg.includes('No Channel ID');
@@ -735,7 +770,7 @@ describe('TikTokLiveNotifier', () => {
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).toHaveBeenCalledWith('Error: Channel not found or is not a text-based channel.');
         });
@@ -753,14 +788,16 @@ describe('TikTokLiveNotifier', () => {
                 isTextBased: jest.fn(() => false),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockVoiceChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockVoiceChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).toHaveBeenCalledWith('Error: Channel not found or is not a text-based channel.');
         });
@@ -778,16 +815,20 @@ describe('TikTokLiveNotifier', () => {
                 isTextBased: jest.fn(() => true),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannelNoSend as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannelNoSend as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
-            expect(mockLogger.log).toHaveBeenCalledWith('Error: Bot does not have permission to send messages in the channel.');
+            expect(mockLogger.log).toHaveBeenCalledWith(
+                'Error: Bot does not have permission to send messages in the channel.'
+            );
         });
 
         test('should handle channel with send property that is not a function', async () => {
@@ -804,16 +845,20 @@ describe('TikTokLiveNotifier', () => {
                 send: 'not a function',
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannelSendNotFunction as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannelSendNotFunction as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
-            expect(mockLogger.log).toHaveBeenCalledWith('Error: Bot does not have permission to send messages in the channel.');
+            expect(mockLogger.log).toHaveBeenCalledWith(
+                'Error: Bot does not have permission to send messages in the channel.'
+            );
         });
 
         test('should handle channel send throwing an error', async () => {
@@ -831,14 +876,16 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockRejectedValue(sendError),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Error sending to channel'));
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Send failed'));
@@ -858,14 +905,16 @@ describe('TikTokLiveNotifier', () => {
                 send: jest.fn<() => Promise<any>>().mockRejectedValue('String error'),
             };
 
-            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(mockChannel as any);
+            (mockClient.channels.fetch as jest.Mock<(id: string) => Promise<any>>).mockResolvedValue(
+                mockChannel as any
+            );
 
             notifier = new TikTokLiveNotifier(mockClient, mockLogger);
             const callback = scheduledCallbacks[scheduledCallbacks.length - 1];
 
             mockLogger.log.mockClear();
             await callback();
-            await new Promise(resolve => setImmediate(resolve));
+            await new Promise((resolve) => setImmediate(resolve));
 
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Error sending to channel'));
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('String error'));

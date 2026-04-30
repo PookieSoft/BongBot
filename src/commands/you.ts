@@ -3,9 +3,7 @@ import EMBED_BUILDER from '../helpers/embedBuilder.js';
 import { buildError } from '../helpers/errorBuilder.js';
 
 export default {
-    data: new SlashCommandBuilder()
-        .setName('you')
-        .setDescription('you!'),
+    data: new SlashCommandBuilder().setName('you').setDescription('you!'),
     async execute(interaction: CommandInteraction, client: Client) {
         try {
             return await new EMBED_BUILDER().constructEmbedWithImage('clown.jpg').addDefaultFooter(client).build();
@@ -15,6 +13,6 @@ export default {
     },
     fullDesc: {
         options: [],
-        description: "Posts a you!"
-    }
-}
+        description: 'Posts a you!',
+    },
+};

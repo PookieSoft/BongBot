@@ -82,7 +82,10 @@ describe('DefaultLogger', () => {
 
         it('should log the initialization message to console', () => {
             new DefaultLogger();
-            expect(consoleLogSpy).toHaveBeenCalledWith('Initializing DefaultLogger with DB path:', expect.stringContaining(`${mockCurrentDateISO}.db`));
+            expect(consoleLogSpy).toHaveBeenCalledWith(
+                'Initializing DefaultLogger with DB path:',
+                expect.stringContaining(`${mockCurrentDateISO}.db`)
+            );
         });
     });
 
@@ -99,7 +102,12 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.info('Test info message', 'Stack trace here');
 
-            expect(mockRun).toHaveBeenCalledWith('Test info message', 'Stack trace here', 'INFO', 'test-session-id-123');
+            expect(mockRun).toHaveBeenCalledWith(
+                'Test info message',
+                'Stack trace here',
+                'INFO',
+                'test-session-id-123'
+            );
         });
     });
 
@@ -128,8 +136,15 @@ describe('DefaultLogger', () => {
 
             logger.error(testError);
 
-            expect(mockRun).toHaveBeenCalledWith('Test error message', 'Error stack trace', 'ERROR', 'test-session-id-123');
-            expect(consoleErrorSpy).toHaveBeenCalledWith(`${mockFormattedDateTime} | An Error Occurred - check logs for details.`);
+            expect(mockRun).toHaveBeenCalledWith(
+                'Test error message',
+                'Error stack trace',
+                'ERROR',
+                'test-session-id-123'
+            );
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                `${mockFormattedDateTime} | An Error Occurred - check logs for details.`
+            );
         });
 
         it('should handle error without stack', () => {
@@ -164,10 +179,14 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.info('Fallback test message');
 
-            expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to log to DB:', expect.any(Error), 'falling back to legacy file logger');
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Failed to log to DB:',
+                expect.any(Error),
+                'falling back to legacy file logger'
+            );
 
             // Allow async operations to complete
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
 
             expect(mockWriteFile).toHaveBeenCalledWith(expect.stringContaining('.log'), 'Logger Initialised\n\n');
             expect(mockAppendFile).toHaveBeenCalled();
@@ -183,7 +202,7 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.debug('Append test message');
 
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
 
             expect(mockWriteFile).not.toHaveBeenCalled();
             expect(mockAppendFile).toHaveBeenCalledWith(
@@ -202,7 +221,7 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.info('Append fail test');
 
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
 
             expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to append to log file:', expect.any(Error));
         });
@@ -217,7 +236,7 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.info('Message with stack', 'Stack trace content');
 
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
 
             expect(mockAppendFile).toHaveBeenCalledWith(
                 expect.stringContaining('.log'),
@@ -236,7 +255,7 @@ describe('DefaultLogger', () => {
             const logger = new DefaultLogger();
             logger.info('Test message');
 
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
 
             // Should log that legacy fallback failed
             expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to log to legacy file:', expect.any(Error));
@@ -251,7 +270,12 @@ describe('DefaultLogger', () => {
             logger.error(errorWithoutMessage);
 
             // The error.message || error fallback should use the error object itself
-            expect(mockRun).toHaveBeenCalledWith(expect.any(String), 'Custom stack trace', 'ERROR', 'test-session-id-123');
+            expect(mockRun).toHaveBeenCalledWith(
+                expect.any(String),
+                'Custom stack trace',
+                'ERROR',
+                'test-session-id-123'
+            );
             expect(consoleErrorSpy).toHaveBeenCalled();
         });
     });

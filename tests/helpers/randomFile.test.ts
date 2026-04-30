@@ -2,7 +2,8 @@ import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import path from 'path';
 
 // Mock fs module
-const mockReaddir = jest.fn<(dir: string, callback: (err: NodeJS.ErrnoException | null, files: string[]) => void) => void>();
+const mockReaddir =
+    jest.fn<(dir: string, callback: (err: NodeJS.ErrnoException | null, files: string[]) => void) => void>();
 const mockStat = jest.fn<(path: string, callback: (err: NodeJS.ErrnoException | null, stats: any) => void) => void>();
 
 jest.unstable_mockModule('fs', () => ({
@@ -179,7 +180,7 @@ describe('getRandomFile', () => {
 
     test('should eventually return undefined if all entries are directories', (done) => {
         const mockFiles = ['dir1', 'dir2'];
-        
+
         mockReaddir.mockImplementation((dir, callback) => {
             callback(null, mockFiles);
         });

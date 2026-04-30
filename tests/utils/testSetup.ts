@@ -37,9 +37,4 @@ const setupStandardTestEnvironment = () => {
     setupMockCleanup();
 };
 
-export {
-    setupStandardTestEnvironment,
-    setupMSWServer,
-    setupMockCleanup,
-    server
-};
+export { setupStandardTestEnvironment, setupMSWServer, setupMockCleanup, server };
