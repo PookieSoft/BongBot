@@ -1,0 +1,16 @@
+node_modules
+dist
+coverage
+test-results
+logs
+data
+*.log
+
+package-lock.json
+bun.lock
+
+.claude
+
+# YAML — workflows follow GitHub Actions 2-space convention
+*.yml
+*.yaml
