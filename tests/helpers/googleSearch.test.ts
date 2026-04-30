@@ -2,7 +2,10 @@ import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import { setupMockCleanup } from '../utils/testSetup.js';
 
 // Create mock functions with proper typing
-const mockGet = jest.fn<(endpoint: string, path: string, params: string, options: object) => Promise<{ items: Array<{ link: string }> }>>();
+const mockGet =
+    jest.fn<
+        (endpoint: string, path: string, params: string, options: object) => Promise<{ items: Array<{ link: string }> }>
+    >();
 const mockSetImage = jest.fn().mockReturnThis();
 const mockSetDescription = jest.fn().mockReturnThis();
 const mockToJSON = jest.fn().mockReturnValue({ mockEmbed: true });
@@ -24,9 +27,9 @@ jest.unstable_mockModule('../../src/config/index.js', () => ({
     default: {
         apis: {
             google: {
-                url: "https://www.googleapis.com",
-                apikey: "mock_google_api_key",
-                cx: "mock_google_cx",
+                url: 'https://www.googleapis.com',
+                apikey: 'mock_google_api_key',
+                cx: 'mock_google_cx',
             },
         },
     },
@@ -65,7 +68,7 @@ describe('googleSearch helper', () => {
         ];
 
         mockGet.mockResolvedValueOnce({
-            items: mockImageLinks.map(link => ({ link: link })),
+            items: mockImageLinks.map((link) => ({ link: link })),
         });
 
         const result = await googleSearch.searchImage(mockQuery);

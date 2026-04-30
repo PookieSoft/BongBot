@@ -1,9 +1,8 @@
-
 import { server } from './mocks/server.js';
 import { jest } from '@jest/globals';
 
 jest.mock('fs', () => ({
-    readFileSync: jest.fn()
+    readFileSync: jest.fn(),
 }));
 
 // Global test mock for better-sqlite3 to avoid loading native bindings in Jest
@@ -12,10 +11,10 @@ const mockPrepare = jest.fn(() => ({ run: mockRun }));
 const mockDb = {
     prepare: mockPrepare,
     exec: jest.fn(),
-    close: jest.fn()
+    close: jest.fn(),
 };
 jest.unstable_mockModule('better-sqlite3', () => ({
-    default: jest.fn(() => mockDb)
+    default: jest.fn(() => mockDb),
 }));
 
 // Expose the sqlite mocks to tests so we can assert the logger wrote to the DB
@@ -33,5 +32,5 @@ afterEach(() => server.resetHandlers());
 afterAll(async () => {
     server.close();
     // Allow pending requests to complete before Jest exits
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 });

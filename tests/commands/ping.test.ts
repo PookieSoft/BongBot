@@ -1,6 +1,5 @@
-
 import pingCommand from '../../src/commands/ping.js';
-import { SlashCommandBuilder } from 'discord.js'
+import { SlashCommandBuilder } from 'discord.js';
 
 describe('ping command', () => {
     it('should have a data property', () => {

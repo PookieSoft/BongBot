@@ -1,13 +1,13 @@
 import { jest } from '@jest/globals';
-import type { 
-  Client, 
-  ChatInputCommandInteraction,
-  Guild, 
-  GuildMember, 
-  User,
-  Message,
-  GuildMemberManager,
-  CacheType
+import type {
+    Client,
+    ChatInputCommandInteraction,
+    Guild,
+    GuildMember,
+    User,
+    Message,
+    GuildMemberManager,
+    CacheType,
 } from 'discord.js';
 import { setupStandardTestEnvironment, server } from '../utils/testSetup.js';
 import { testCommandStructure, createMockInteraction, createMockClient } from '../utils/commandTestUtils.js';
@@ -15,23 +15,23 @@ import { http, HttpResponse } from 'msw';
 
 // Mock the config module before any imports
 const mockApis = {
-  openai: {
-    active: true,
-    url: "https://api.openai.com",
-    apikey: "mock_openai_key",
-    model: "gpt-4o",
-  },
-  googleai: {
-    active: false,
-    url: "https://generativelanguage.googleapis.com",
-    apikey: "mock_googleai_key",
-    model: "gemini-2.5-flash-lite",
-    image_model: "gemini-2.5-flash-image-preview",
-  },
+    openai: {
+        active: true,
+        url: 'https://api.openai.com',
+        apikey: 'mock_openai_key',
+        model: 'gpt-4o',
+    },
+    googleai: {
+        active: false,
+        url: 'https://generativelanguage.googleapis.com',
+        apikey: 'mock_googleai_key',
+        model: 'gemini-2.5-flash-lite',
+        image_model: 'gemini-2.5-flash-image-preview',
+    },
 };
 
 jest.unstable_mockModule('../../src/config/index.js', () => ({
-  apis: mockApis,
+    apis: mockApis,
 }));
 
 // Mock embedBuilder
@@ -41,10 +41,10 @@ const mockAddFooter = jest.fn();
 const mockBuild = jest.fn();
 
 jest.unstable_mockModule('../../src/helpers/embedBuilder.js', () => ({
-  default: class EMBED_BUILDER {
-    constructEmbedWithRandomFile = mockConstructEmbedWithRandomFile;
-    constructEmbedWithAttachment = mockConstructEmbedWithAttachment;
-  }
+    default: class EMBED_BUILDER {
+        constructEmbedWithRandomFile = mockConstructEmbedWithRandomFile;
+        constructEmbedWithAttachment = mockConstructEmbedWithAttachment;
+    },
 }));
 
 // Import after mocking
@@ -58,324 +58,325 @@ setupStandardTestEnvironment();
 testCommandStructure(chatAiCommand, 'chat');
 
 describe('chat_ai command execution', () => {
-  const mockClient = createMockClient() as unknown as Client;
+    const mockClient = createMockClient() as unknown as Client;
 
-  let mockInteraction: ChatInputCommandInteraction<CacheType>;
+    let mockInteraction: ChatInputCommandInteraction<CacheType>;
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    
-    apis.openai.active = true;
-    apis.googleai.active = false;
-    
-    mockConstructEmbedWithRandomFile.mockReturnValue('mocked embed');
-    mockAddFooter.mockReturnThis();
-    mockBuild.mockReturnValue('mocked embed with attachment');
-    mockConstructEmbedWithAttachment.mockReturnValue({
-      addFooter: mockAddFooter,
-      build: mockBuild,
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        apis.openai.active = true;
+        apis.googleai.active = false;
+
+        mockConstructEmbedWithRandomFile.mockReturnValue('mocked embed');
+        mockAddFooter.mockReturnThis();
+        mockBuild.mockReturnValue('mocked embed with attachment');
+        mockConstructEmbedWithAttachment.mockReturnValue({
+            addFooter: mockAddFooter,
+            build: mockBuild,
+        });
+
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
+
+        const mockGuild = {
+            members: mockGuildMemberManager,
+            id: 'test_server',
+        } as Partial<Guild>;
+
+        const mockUser = {
+            id: 'test_user_id',
+        } as Partial<User>;
+
+        mockInteraction = {
+            ...createMockInteraction({}),
+            options: {
+                getString: jest.fn().mockReturnValue('test input'),
+            },
+            guildId: 'test_server',
+            guild: mockGuild,
+            user: mockUser,
+        } as unknown as ChatInputCommandInteraction<CacheType>;
     });
 
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
+    it('should call OpenAI API when it is active', async () => {
+        const result = await chatAiCommand.execute(mockInteraction, mockClient);
 
-    const mockGuild = {
-      members: mockGuildMemberManager,
-      id: 'test_server',
-    } as Partial<Guild>;
+        expect(result).toBe('mocked embed');
+    });
 
-    const mockUser = {
-      id: 'test_user_id',
-    } as Partial<User>;
+    it('should call Google AI API when it is active', async () => {
+        apis.openai.active = false;
+        apis.googleai.apikey = 'mock_googleai_key';
+        apis.googleai.active = true;
 
-    mockInteraction = {
-      ...createMockInteraction({}),
-      options: {
-        getString: jest.fn().mockReturnValue('test input'),
-      },
-      guildId: 'test_server',
-      guild: mockGuild,
-      user: mockUser,
-    } as unknown as ChatInputCommandInteraction<CacheType>;
-  });
+        const result = await chatAiCommand.execute(mockInteraction, mockClient);
 
-  it('should call OpenAI API when it is active', async () => {
-    const result = await chatAiCommand.execute(mockInteraction, mockClient);
+        expect(result).toBe('mocked embed with attachment');
+    });
 
-    expect(result).toBe('mocked embed');
-  });
+    it('should return a message when no AI is active', async () => {
+        apis.openai.active = false;
+        apis.googleai.active = false;
 
-  it('should call Google AI API when it is active', async () => {
-    apis.openai.active = false;
-    apis.googleai.apikey = 'mock_googleai_key';
-    apis.googleai.active = true;
+        const result = await chatAiCommand.execute(mockInteraction, mockClient);
 
-    const result = await chatAiCommand.execute(mockInteraction, mockClient);
+        expect(mockConstructEmbedWithRandomFile).toHaveBeenCalledWith(
+            'Hmph! Why are you trying to talk to me when no AI service is active?'
+        );
+        expect(result).toBe('mocked embed');
+    });
 
-    expect(result).toBe('mocked embed with attachment');
-  });
+    it('should handle legacy commands', async () => {
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
 
-  it('should return a message when no AI is active', async () => {
-    apis.openai.active = false;
-    apis.googleai.active = false;
+        const mockMsg = {
+            content: '<@123456789> test input',
+            guild: {
+                members: mockGuildMemberManager,
+                id: 'test_server',
+            } as Partial<Guild>,
+            author: {
+                id: 'test_user_id',
+            } as Partial<User>,
+        } as Partial<Message>;
 
-    const result = await chatAiCommand.execute(mockInteraction, mockClient);
+        const result = await chatAiCommand.executeLegacy(mockMsg as Message, mockClient);
+        expect(result).toBe('mocked embed');
+    });
 
-    expect(mockConstructEmbedWithRandomFile).toHaveBeenCalledWith(
-      'Hmph! Why are you trying to talk to me when no AI service is active?'
-    );
-    expect(result).toBe('mocked embed');
-  });
+    it('should throw an error when OpenAI API call fails', async () => {
+        server.use(
+            http.post('https://api.openai.com/v1/chat/completions', () => {
+                return new HttpResponse(null, { status: 500 });
+            })
+        );
 
-  it('should handle legacy commands', async () => {
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
+        await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow();
+    });
 
-    const mockMsg = {
-      content: '<@123456789> test input',
-      guild: {
-        members: mockGuildMemberManager,
-        id: 'test_server',
-      } as Partial<Guild>,
-      author: {
-        id: 'test_user_id',
-      } as Partial<User>,
-    } as Partial<Message>;
+    it('should handle Google AI image generation failure and fallback to random file', async () => {
+        apis.googleai.active = true;
+        apis.googleai.apikey = 'mock_googleai_key';
+        apis.openai.active = false;
 
-    const result = await chatAiCommand.executeLegacy(mockMsg as Message, mockClient);
-    expect(result).toBe('mocked embed');
-  });
+        // Mock image generation failure
+        server.use(
+            http.post(
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent',
+                () => {
+                    return HttpResponse.json({
+                        candidates: [{ content: { parts: [{ text: 'no image data' }] } }],
+                    });
+                }
+            )
+        );
 
-  it('should throw an error when OpenAI API call fails', async () => {
-    server.use(
-      http.post('https://api.openai.com/v1/chat/completions', () => {
-        return new HttpResponse(null, { status: 500 });
-      })
-    );
+        const result = await chatAiCommand.execute(mockInteraction, mockClient);
 
-    await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow();
-  });
+        expect(mockConstructEmbedWithRandomFile).toHaveBeenCalled();
+        expect(result).toBe('mocked embed');
+    });
 
-  it('should handle Google AI image generation failure and fallback to random file', async () => {
-    apis.googleai.active = true;
-    apis.googleai.apikey = 'mock_googleai_key';
-    apis.openai.active = false;
+    it('should handle multiple messages and maintain history', async () => {
+        apis.openai.active = true;
+        apis.googleai.active = false;
 
-    // Mock image generation failure
-    server.use(
-      http.post(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent',
-        () => {
-          return HttpResponse.json({
-            candidates: [{ content: { parts: [{ text: 'no image data' }] } }],
-          });
+        // First message
+        await chatAiCommand.execute(mockInteraction, mockClient);
+
+        // Second message to test history functionality
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
+
+        const secondInteraction = {
+            options: {
+                getString: jest.fn().mockReturnValue('follow up message'),
+                data: [],
+            },
+            user: {
+                id: 'test_user_id',
+            } as Partial<User>,
+            guildId: 'test_server',
+            guild: {
+                id: 'test_server',
+                members: mockGuildMemberManager,
+            } as Partial<Guild>,
+        } as unknown as ChatInputCommandInteraction;
+
+        const result = await chatAiCommand.execute(secondInteraction, mockClient);
+        expect(result).toBe('mocked embed');
+    });
+
+    it('should handle history limit and splice old messages', async () => {
+        apis.openai.active = true;
+        apis.googleai.active = false;
+
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
+
+        // Fill up the history to exceed MAX_HISTORY_LENGTH (100)
+        for (let i = 0; i < 51; i++) {
+            const testInteraction = {
+                options: {
+                    getString: jest.fn().mockReturnValue(`message ${i}`),
+                    data: [],
+                },
+                user: {
+                    id: 'test_user_id',
+                } as Partial<User>,
+                guildId: 'history_test_server',
+                guild: {
+                    members: mockGuildMemberManager,
+                } as Partial<Guild>,
+            } as unknown as ChatInputCommandInteraction;
+
+            await chatAiCommand.execute(testInteraction, mockClient);
         }
-      )
-    );
 
-    const result = await chatAiCommand.execute(mockInteraction, mockClient);
+        expect(mockConstructEmbedWithRandomFile).toHaveBeenCalled();
+    });
 
-    expect(mockConstructEmbedWithRandomFile).toHaveBeenCalled();
-    expect(result).toBe('mocked embed');
-  });
+    it('should throw error when Google AI returns no text response', async () => {
+        apis.googleai.active = true;
+        apis.googleai.apikey = 'mock_googleai_key';
+        apis.openai.active = false;
 
-  it('should handle multiple messages and maintain history', async () => {
-    apis.openai.active = true;
-    apis.googleai.active = false;
+        // Mock Google AI to return no text
+        server.use(
+            http.post(
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
+                () => {
+                    return HttpResponse.json({
+                        candidates: [{ content: { parts: [{ text: '' }] } }],
+                    });
+                }
+            )
+        );
 
-    // First message
-    await chatAiCommand.execute(mockInteraction, mockClient);
+        await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow(
+            'No response from AI - potentially malicious prompt?'
+        );
+    });
 
-    // Second message to test history functionality
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
+    it('should use globalName when nickname is null', async () => {
+        apis.openai.active = true;
+        apis.googleai.active = false;
 
-    const secondInteraction = {
-      options: {
-        getString: jest.fn().mockReturnValue('follow up message'),
-        data: [],
-      },
-      user: {
-        id: 'test_user_id',
-      } as Partial<User>,
-      guildId: 'test_server',
-      guild: {
-        id: 'test_server',
-        members: mockGuildMemberManager,
-      } as Partial<Guild>,
-    } as unknown as ChatInputCommandInteraction;
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
+                nickname: null,
+                user: { globalName: 'GlobalUserName' },
+            } as unknown as GuildMember),
+        } as unknown as GuildMemberManager;
 
-    const result = await chatAiCommand.execute(
-      secondInteraction,
-      mockClient
-    );
-    expect(result).toBe('mocked embed');
-  });
+        const mockInteractionWithNoNickname = {
+            ...mockInteraction,
+            guild: {
+                members: mockGuildMemberManager,
+                id: 'test_server',
+            } as Partial<Guild>,
+        } as unknown as ChatInputCommandInteraction<CacheType>;
 
-  it('should handle history limit and splice old messages', async () => {
-    apis.openai.active = true;
-    apis.googleai.active = false;
+        const result = await chatAiCommand.execute(mockInteractionWithNoNickname, mockClient);
+        expect(result).toBe('mocked embed');
+    });
 
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
+    it('should use globalName in legacy message when nickname is null', async () => {
+        apis.openai.active = true;
+        apis.googleai.active = false;
 
-    // Fill up the history to exceed MAX_HISTORY_LENGTH (100)
-    for (let i = 0; i < 51; i++) {
-      const testInteraction = {
-        options: {
-          getString: jest.fn().mockReturnValue(`message ${i}`),
-          data: [],
-        },
-        user: {
-          id: 'test_user_id',
-        } as Partial<User>,
-        guildId: 'history_test_server',
-        guild: {
-          members: mockGuildMemberManager,
-        } as Partial<Guild>,
-      } as unknown as ChatInputCommandInteraction;
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
+                nickname: null,
+                user: { globalName: 'GlobalUserName' },
+            } as unknown as GuildMember),
+        } as unknown as GuildMemberManager;
 
-      await chatAiCommand.execute(testInteraction, mockClient);
-    }
+        const mockMsg = {
+            content: '<@123456789> test input',
+            guild: {
+                members: mockGuildMemberManager,
+                id: 'test_server',
+            } as Partial<Guild>,
+            author: {
+                id: 'test_user_id',
+            } as Partial<User>,
+        } as Partial<Message>;
 
-    expect(mockConstructEmbedWithRandomFile).toHaveBeenCalled();
-  });
+        const result = await chatAiCommand.executeLegacy(mockMsg as Message, mockClient);
+        expect(result).toBe('mocked embed');
+    });
 
-  it('should throw error when Google AI returns no text response', async () => {
-    apis.googleai.active = true;
-    apis.googleai.apikey = 'mock_googleai_key';
-    apis.openai.active = false;
+    it('should throw error when input is null', async () => {
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
 
-    // Mock Google AI to return no text
-    server.use(
-      http.post(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
-        () => {
-          return HttpResponse.json({
-            candidates: [{ content: { parts: [{ text: '' }] } }],
-          });
-        }
-      )
-    );
+        const mockInteractionNoInput = {
+            ...mockInteraction,
+            options: {
+                getString: jest.fn().mockReturnValue(null),
+            },
+            guild: {
+                members: mockGuildMemberManager,
+                id: 'test_server',
+            } as Partial<Guild>,
+        } as unknown as ChatInputCommandInteraction<CacheType>;
 
-    await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow(
-      'No response from AI - potentially malicious prompt?'
-    );
-  });
+        await expect(chatAiCommand.execute(mockInteractionNoInput, mockClient)).rejects.toThrow('No input provided');
+    });
 
-  it('should use globalName when nickname is null', async () => {
-    apis.openai.active = true;
-    apis.googleai.active = false;
+    it('should throw error when serverId is null', async () => {
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
+        } as unknown as GuildMemberManager;
 
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
-        nickname: null,
-        user: { globalName: 'GlobalUserName' }
-      } as unknown as GuildMember),
-    } as unknown as GuildMemberManager;
+        const mockInteractionNoServer = {
+            ...mockInteraction,
+            guildId: null,
+            guild: {
+                members: mockGuildMemberManager,
+                id: null,
+            } as unknown as Guild,
+        } as unknown as ChatInputCommandInteraction<CacheType>;
 
-    const mockInteractionWithNoNickname = {
-      ...mockInteraction,
-      guild: {
-        members: mockGuildMemberManager,
-        id: 'test_server',
-      } as Partial<Guild>,
-    } as unknown as ChatInputCommandInteraction<CacheType>;
+        await expect(chatAiCommand.execute(mockInteractionNoServer, mockClient)).rejects.toThrow(
+            'No server ID available'
+        );
+    });
 
-    const result = await chatAiCommand.execute(mockInteractionWithNoNickname, mockClient);
-    expect(result).toBe('mocked embed');
-  });
+    it('should throw error when authorId is null', async () => {
+        const mockGuildMemberManager = {
+            fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
+                nickname: null,
+                user: { globalName: null },
+            } as unknown as GuildMember),
+        } as unknown as GuildMemberManager;
 
-  it('should use globalName in legacy message when nickname is null', async () => {
-    apis.openai.active = true;
-    apis.googleai.active = false;
+        const mockInteractionNoAuthor = {
+            ...mockInteraction,
+            guild: {
+                members: mockGuildMemberManager,
+                id: 'test_server',
+            } as Partial<Guild>,
+        } as unknown as ChatInputCommandInteraction<CacheType>;
 
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
-        nickname: null,
-        user: { globalName: 'GlobalUserName' }
-      } as unknown as GuildMember),
-    } as unknown as GuildMemberManager;
+        await expect(chatAiCommand.execute(mockInteractionNoAuthor, mockClient)).rejects.toThrow(
+            'No author ID available'
+        );
+    });
 
-    const mockMsg = {
-      content: '<@123456789> test input',
-      guild: {
-        members: mockGuildMemberManager,
-        id: 'test_server',
-      } as Partial<Guild>,
-      author: {
-        id: 'test_user_id',
-      } as Partial<User>,
-    } as Partial<Message>;
+    it('should throw error when Google AI API key is not set', async () => {
+        apis.googleai.active = true;
+        apis.googleai.apikey = null;
+        apis.openai.active = false;
 
-    const result = await chatAiCommand.executeLegacy(mockMsg as Message, mockClient);
-    expect(result).toBe('mocked embed');
-  });
-
-  it('should throw error when input is null', async () => {
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
-
-    const mockInteractionNoInput = {
-      ...mockInteraction,
-      options: {
-        getString: jest.fn().mockReturnValue(null),
-      },
-      guild: {
-        members: mockGuildMemberManager,
-        id: 'test_server',
-      } as Partial<Guild>,
-    } as unknown as ChatInputCommandInteraction<CacheType>;
-
-    await expect(chatAiCommand.execute(mockInteractionNoInput, mockClient)).rejects.toThrow('No input provided');
-  });
-
-  it('should throw error when serverId is null', async () => {
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({ nickname: 'test_user' } as GuildMember),
-    } as unknown as GuildMemberManager;
-
-    const mockInteractionNoServer = {
-      ...mockInteraction,
-      guildId: null,
-      guild: {
-        members: mockGuildMemberManager,
-        id: null,
-      } as unknown as Guild,
-    } as unknown as ChatInputCommandInteraction<CacheType>;
-
-    await expect(chatAiCommand.execute(mockInteractionNoServer, mockClient)).rejects.toThrow('No server ID available');
-  });
-
-  it('should throw error when authorId is null', async () => {
-    const mockGuildMemberManager = {
-      fetch: jest.fn<() => Promise<GuildMember>>().mockResolvedValue({
-        nickname: null,
-        user: { globalName: null }
-      } as unknown as GuildMember),
-    } as unknown as GuildMemberManager;
-
-    const mockInteractionNoAuthor = {
-      ...mockInteraction,
-      guild: {
-        members: mockGuildMemberManager,
-        id: 'test_server',
-      } as Partial<Guild>,
-    } as unknown as ChatInputCommandInteraction<CacheType>;
-
-    await expect(chatAiCommand.execute(mockInteractionNoAuthor, mockClient)).rejects.toThrow('No author ID available');
-  });
-
-  it('should throw error when Google AI API key is not set', async () => {
-    apis.googleai.active = true;
-    apis.googleai.apikey = null;
-    apis.openai.active = false;
-
-    await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow('Google API key not set');
-  });
+        await expect(chatAiCommand.execute(mockInteraction, mockClient)).rejects.toThrow('Google API key not set');
+    });
 });

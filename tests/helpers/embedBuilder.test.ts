@@ -1,7 +1,6 @@
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import * as Discord from 'discord.js';
 
-
 // Mock discord.js EmbedBuilder and AttachmentBuilder
 class MockEmbedBuilder {
     description: string | null = null;
@@ -63,13 +62,13 @@ class MockAttachmentBuilder {
 
 jest.unstable_mockModule('discord.js', () => ({
     EmbedBuilder: jest.fn(() => new MockEmbedBuilder()),
-    AttachmentBuilder: jest.fn((file: any, options?: any) => new MockAttachmentBuilder(file, options))
+    AttachmentBuilder: jest.fn((file: any, options?: any) => new MockAttachmentBuilder(file, options)),
 }));
 
 // Mock select-random-file
 const mockSelectRandomFile = jest.fn();
 jest.unstable_mockModule('../../src/helpers/randomFile.js', () => ({
-    default: mockSelectRandomFile
+    default: mockSelectRandomFile,
 }));
 
 // Dynamically import after mocks are set up
@@ -83,11 +82,11 @@ describe('EMBED_BUILDER class', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        
+
         const discordModule = await import('discord.js');
         EmbedBuilder = discordModule.EmbedBuilder;
         AttachmentBuilder = discordModule.AttachmentBuilder;
-        
+
         const embedBuilderModule = await import('../../src/helpers/embedBuilder.js');
         EMBED_BUILDER = embedBuilderModule.default;
     });
@@ -141,9 +140,7 @@ describe('EMBED_BUILDER class', () => {
 
     describe('constructEmbedWithRandomFile', () => {
         test('should set description and thumbnail from a random file', async () => {
-            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) => 
-                callback(null, 'random.png')
-            );
+            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) => callback(null, 'random.png'));
 
             const builder = new EMBED_BUILDER();
             const description = 'Random Description';
@@ -161,22 +158,16 @@ describe('EMBED_BUILDER class', () => {
 
         test('should handle errors from selectRandomFile', async () => {
             const mockError = new Error('File selection error');
-            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) =>
-                callback(mockError)
-            );
+            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) => callback(mockError));
 
             const builder = new EMBED_BUILDER();
             const description = 'Random Description';
 
-            await expect(builder.constructEmbedWithRandomFile(description)).rejects.toThrow(
-                'File selection error'
-            );
+            await expect(builder.constructEmbedWithRandomFile(description)).rejects.toThrow('File selection error');
         });
 
         test('should handle null file from selectRandomFile', async () => {
-            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) =>
-                callback(null, null)
-            );
+            mockSelectRandomFile.mockImplementationOnce((dir: any, callback: any) => callback(null, null));
 
             const builder = new EMBED_BUILDER();
             const description = 'Random Description';
@@ -195,15 +186,15 @@ describe('EMBED_BUILDER class', () => {
             const mockClient = {
                 version: '1.2.3',
                 user: {
-                    displayAvatarURL: jest.fn<any>(() => 'http://example.com/avatar.png')
-                }
+                    displayAvatarURL: jest.fn<any>(() => 'http://example.com/avatar.png'),
+                },
             } as unknown as Discord.Client;
 
             const result = builder.addDefaultFooter(mockClient);
 
             expect(builder.embed.setFooter).toHaveBeenCalledWith({
                 text: 'BongBot • 1.2.3',
-                iconURL: 'http://example.com/avatar.png'
+                iconURL: 'http://example.com/avatar.png',
             });
             expect(builder.embed.setTimestamp).toHaveBeenCalledTimes(1);
             expect(result).toBe(builder);
@@ -214,15 +205,15 @@ describe('EMBED_BUILDER class', () => {
             const mockClient = {
                 version: null,
                 user: {
-                    displayAvatarURL: jest.fn<any>(() => 'http://example.com/avatar.png')
-                }
+                    displayAvatarURL: jest.fn<any>(() => 'http://example.com/avatar.png'),
+                },
             } as unknown as Discord.Client;
 
             builder.addDefaultFooter(mockClient);
 
             expect(builder.embed.setFooter).toHaveBeenCalledWith({
                 text: 'BongBot • dev build',
-                iconURL: 'http://example.com/avatar.png'
+                iconURL: 'http://example.com/avatar.png',
             });
             expect(builder.embed.setTimestamp).toHaveBeenCalledTimes(1);
         });
@@ -232,15 +223,15 @@ describe('EMBED_BUILDER class', () => {
             const mockClient = {
                 version: '1.0.0',
                 user: {
-                    displayAvatarURL: jest.fn<any>(() => null)
-                }
+                    displayAvatarURL: jest.fn<any>(() => null),
+                },
             } as unknown as Discord.Client;
 
             builder.addDefaultFooter(mockClient);
 
             expect(builder.embed.setFooter).toHaveBeenCalledWith({
                 text: 'BongBot • 1.0.0',
-                iconURL: null
+                iconURL: null,
             });
         });
     });

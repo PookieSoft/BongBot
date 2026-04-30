@@ -5,7 +5,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('usercard')
         .setDescription('Returns an info card for a user')
-        .addUserOption(option => option.setName('target').setDescription('Select a user')),
+        .addUserOption((option) => option.setName('target').setDescription('Select a user')),
 
     async execute(interaction: ChatInputCommandInteraction) {
         try {
@@ -24,9 +24,17 @@ export default {
                     { name: 'User Tag', value: user.tag, inline: true },
                     { name: 'User ID', value: user.id, inline: true },
                     { name: 'Bot?', value: user.bot ? 'Yes' : 'No', inline: true },
-                    { name: 'Account Created', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:D>`, inline: true },
-                    { name: 'Joined Server', value: `<t:${Math.floor(member.joinedTimestamp! / 1000)}:D>`, inline: true },
-                    { name: 'Roles', value: member.roles.cache.map(r => r).join(' ') || 'None', inline: false },
+                    {
+                        name: 'Account Created',
+                        value: `<t:${Math.floor(user.createdTimestamp / 1000)}:D>`,
+                        inline: true,
+                    },
+                    {
+                        name: 'Joined Server',
+                        value: `<t:${Math.floor(member.joinedTimestamp! / 1000)}:D>`,
+                        inline: true,
+                    },
+                    { name: 'Roles', value: member.roles.cache.map((r) => r).join(' ') || 'None', inline: false }
                 );
 
             return { embeds: [embed] };

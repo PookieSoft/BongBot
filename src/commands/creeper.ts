@@ -4,18 +4,18 @@ import { buildError } from '../helpers/errorBuilder.js';
 import { getFilePath } from '../config/index.js';
 
 export default {
-    data: new SlashCommandBuilder()
-        .setName('creeper')
-        .setDescription('creeper!'),
+    data: new SlashCommandBuilder().setName('creeper').setDescription('creeper!'),
     async execute(interaction: CommandInteraction) {
         try {
-            return { files: [{ attachment: fs.readFileSync(getFilePath('files/Creeper.webm')), name: "creeper.webm" }] };
+            return {
+                files: [{ attachment: fs.readFileSync(getFilePath('files/Creeper.webm')), name: 'creeper.webm' }],
+            };
         } catch (error) {
             return await buildError(interaction, error);
         }
     },
     fullDesc: {
         options: [],
-        description: "Posts a creeper!"
-    }
-}
+        description: 'Posts a creeper!',
+    },
+};

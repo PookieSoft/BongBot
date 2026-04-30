@@ -21,7 +21,7 @@ bot.on('messageCreate', async (message: Message) => {
     if (message!.author!.bot || !message!.mentions?.users!.has(bot.user!.id)) return;
     let reply;
     try {
-        reply = await message.reply({ content: 'BongBot is thinking...', allowedMentions: { repliedUser: false }});
+        reply = await message.reply({ content: 'BongBot is thinking...', allowedMentions: { repliedUser: false } });
         const mentionRegex = new RegExp(`<@!?${bot.user!.id}>`, 'g');
         const content = message.content.replace(mentionRegex, '').trim();
         let response;
@@ -31,7 +31,9 @@ bot.on('messageCreate', async (message: Message) => {
         await message.reply(response);
     } catch (error) {
         const errorResp = await buildUnknownError(error);
-        if (reply) { await reply.delete(); }
+        if (reply) {
+            await reply.delete();
+        }
         await message.reply(errorResp as MessageReplyOptions);
-    }   
+    }
 });

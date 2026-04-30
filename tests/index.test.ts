@@ -11,9 +11,9 @@ jest.unstable_mockModule('@pookiesoft/bongbot-core', () => {
             logger: { info: jest.fn(), error: jest.fn() },
             commands: new Map([
                 ['create_quote', { executeReply: mockExecuteReply }],
-                ['chat', { executeLegacy: mockExecuteLegacy }]
-            ])
-        }))
+                ['chat', { executeLegacy: mockExecuteLegacy }],
+            ]),
+        })),
     };
 });
 
@@ -22,19 +22,19 @@ jest.unstable_mockModule('discord.js', () => ({
 }));
 
 jest.unstable_mockModule('../src/config/index.js', () => ({
-    validateRequiredConfig: jest.fn()
+    validateRequiredConfig: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/helpers/errorBuilder.js', () => ({
-    buildUnknownError: jest.fn((err: any) => ({ content: `Error: ${err.message}` }))
+    buildUnknownError: jest.fn((err: any) => ({ content: `Error: ${err.message}` })),
 }));
 
 jest.unstable_mockModule('../src/commands/buildCommands.js', () => ({
-    default: jest.fn()
+    default: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/commands/naniko.js', () => ({
-    default: jest.fn().mockImplementation(() => ({}))
+    default: jest.fn().mockImplementation(() => ({})),
 }));
 
 describe('BongBot index.ts', () => {
@@ -48,12 +48,9 @@ describe('BongBot index.ts', () => {
     });
 
     it('initializes the bot with core package', () => {
-        expect(bongCore.startWithFunctions).toHaveBeenCalledWith(
-            'PookieSoft',
-            'BongBot',
-            expect.any(Function),
-            ['setupCollector']
-        );
+        expect(bongCore.startWithFunctions).toHaveBeenCalledWith('PookieSoft', 'BongBot', expect.any(Function), [
+            'setupCollector',
+        ]);
     });
 
     describe('messageCreate handler', () => {
@@ -72,7 +69,7 @@ describe('BongBot index.ts', () => {
         it('ignores messages that do not mention the bot', async () => {
             const message = {
                 author: { bot: false },
-                mentions: { users: { has: () => false } }
+                mentions: { users: { has: () => false } },
             };
             await messageHandler(message);
             expect(mockExecuteReply).not.toHaveBeenCalled();
@@ -84,7 +81,7 @@ describe('BongBot index.ts', () => {
                 author: { bot: false },
                 mentions: { users: { has: () => true } },
                 content: '<@bot123>',
-                reply: jest.fn<({ }) => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg)
+                reply: jest.fn<({}) => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg),
             };
 
             await messageHandler(message);
@@ -100,7 +97,7 @@ describe('BongBot index.ts', () => {
                 author: { bot: false },
                 mentions: { users: { has: () => true } },
                 content: '<@bot123> how are you?',
-                reply: jest.fn<({ }) => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg)
+                reply: jest.fn<({}) => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg),
             };
 
             await messageHandler(message);
@@ -118,7 +115,7 @@ describe('BongBot index.ts', () => {
                 author: { bot: false },
                 mentions: { users: { has: () => true } },
                 content: '<@bot123> break it',
-                reply: jest.fn<() => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg)
+                reply: jest.fn<() => Promise<{ delete: Function }>>().mockResolvedValue(replyMsg),
             };
 
             await messageHandler(message);
@@ -134,7 +131,7 @@ describe('BongBot index.ts', () => {
                 author: { bot: false },
                 mentions: { users: { has: () => true } },
                 content: '<@bot123> trigger error',
-                reply: jest.fn<() => Promise<void>>().mockRejectedValueOnce(new Error('Discord API Down'))
+                reply: jest.fn<() => Promise<void>>().mockRejectedValueOnce(new Error('Discord API Down')),
             };
 
             await messageHandler(message);
@@ -151,5 +148,4 @@ describe('BongBot index.ts', () => {
         readyHandler();
         expect(TikTok).toHaveBeenCalled();
     });
-
 });

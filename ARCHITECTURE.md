@@ -52,11 +52,11 @@ The entry point orchestrates bot startup in this sequence:
 
 **Event Handlers:**
 
-| Event | Lines | Purpose |
-|-------|-------|---------|
-| `interactionCreate` | 24-44 | Handles slash command execution with deferred replies |
-| `messageCreate` | 47-64 | Handles mention-based invocation (quote creation via `@pookiesoft/bongbot-quote` or chat) |
-| `clientReady` | 67-80 | Registers commands with Discord API, sets presence, initializes TikTok notifier |
+| Event               | Lines | Purpose                                                                                   |
+| ------------------- | ----- | ----------------------------------------------------------------------------------------- |
+| `interactionCreate` | 24-44 | Handles slash command execution with deferred replies                                     |
+| `messageCreate`     | 47-64 | Handles mention-based invocation (quote creation via `@pookiesoft/bongbot-quote` or chat) |
+| `clientReady`       | 67-80 | Registers commands with Discord API, sets presence, initializes TikTok notifier           |
 
 ### 1.3 Command Structure
 
@@ -65,6 +65,7 @@ The entry point orchestrates bot startup in this sequence:
 Commands export a consistent object structure with required and optional properties:
 
 **Required exports:**
+
 ```typescript
 export default {
     data: SlashCommandBuilder,        // Discord.js command definition
@@ -74,21 +75,21 @@ export default {
 ```
 
 **Optional exports:**
+
 - `executeReply(message, bot)` - For mention-based invocation without content (line 55 in index.ts)
 - `executeLegacy(message, bot)` - For mention-based invocation with content (line 56 in index.ts)
 - `msgFlag` - Message flags like `MessageFlags.Ephemeral`
 
 **Example - Simple Command (`src/commands/ping.ts`):**
+
 ```typescript
 export default {
-    data: new SlashCommandBuilder()
-        .setName('ping')
-        .setDescription('Health Check BongBot'),
+    data: new SlashCommandBuilder().setName('ping').setDescription('Health Check BongBot'),
     async execute() {
         return 'Pong';
     },
-    fullDesc: { options: [], description: "Praise unto you, my friend" }
-}
+    fullDesc: { options: [], description: 'Praise unto you, my friend' },
+};
 ```
 
 ### 1.4 Service Layer
@@ -104,9 +105,13 @@ export default {
     get default(): Logger {
         // Returns FileLogger if DEFAULT_LOGGER=file, else DefaultLogger
     },
-    async log(error: any) { /* Legacy compatibility wrapper */ },
-    closeAll() { /* Cleanup for graceful shutdown */ }
-}
+    async log(error: any) {
+        /* Legacy compatibility wrapper */
+    },
+    closeAll() {
+        /* Cleanup for graceful shutdown */
+    },
+};
 
 class LoggerService {
     private connections: Map<string, Logger> = new Map();
@@ -116,12 +121,13 @@ class LoggerService {
 
 **Logger Implementations:**
 
-| Logger | File | Storage | Use Case |
-|--------|------|---------|----------|
-| DefaultLogger | `src/loggers/default_logger.ts` | SQLite database by date | Production |
-| FileLogger | `src/loggers/file_logger.ts` | Flat file by session ID | Local development |
+| Logger        | File                            | Storage                 | Use Case          |
+| ------------- | ------------------------------- | ----------------------- | ----------------- |
+| DefaultLogger | `src/loggers/default_logger.ts` | SQLite database by date | Production        |
+| FileLogger    | `src/loggers/file_logger.ts`    | Flat file by session ID | Local development |
 
 Both implement the `Logger` interface:
+
 ```typescript
 interface Logger {
     info(message: string, stack?: string): void;
@@ -148,6 +154,7 @@ export default { get, post };
 **File: `src/config/index.ts`**
 
 Centralized configuration object with:
+
 - Grouped settings by feature (discord, apis)
 - Environment variable validation (`validateRequiredConfig()`)
 - Test environment detection via `JEST_WORKER_ID`
@@ -156,7 +163,7 @@ Centralized configuration object with:
 const config = {
     discord: { apikey },
     apis: { google, openai, googleai },
-    media: { file_root: process.env.JEST_WORKER_ID ? './src/' : './dist/' }
+    media: { file_root: process.env.JEST_WORKER_ID ? './src/' : './dist/' },
 };
 ```
 
@@ -196,9 +203,9 @@ export interface GithubInfo { ... }
 
 Multiple locations use `any` type, defeating TypeScript's benefits:
 
-| Location | Issue |
-|----------|-------|
-| `src/helpers/interfaces.ts:5` | `Collection<string, any>` for commands |
+| Location                              | Issue                                      |
+| ------------------------------------- | ------------------------------------------ |
+| `src/helpers/interfaces.ts:5`         | `Collection<string, any>` for commands     |
 | `src/commands/buildCommands.ts:39-40` | `Array<any>` and `Collection<string, any>` |
 
 **Impact:** Runtime type errors, reduced IDE support, harder refactoring.
@@ -208,6 +215,7 @@ Multiple locations use `any` type, defeating TypeScript's benefits:
 **Severity: Medium**
 
 No formal `Command` interface exists. Commands are loosely typed objects. This is evident in:
+
 - `buildCommands.ts` line 40: Commands stored as `Collection<string, any>`
 - `index.ts` line 29: `bot.commands!.get(interaction.commandName)` returns `any`
 
@@ -217,10 +225,10 @@ No formal `Command` interface exists. Commands are loosely typed objects. This i
 
 **Severity: Low**
 
-| Pattern | Example |
-|---------|---------|
-| Default object literal | `src/commands/ping.ts` |
-| Default function exports | `src/helpers/caller.ts` |
+| Pattern                           | Example                    |
+| --------------------------------- | -------------------------- |
+| Default object literal            | `src/commands/ping.ts`     |
+| Default function exports          | `src/helpers/caller.ts`    |
 | Default class with static methods | `src/helpers/utilities.ts` |
 
 #### 2.2.2 Direct Singleton Access
@@ -241,11 +249,13 @@ let resp = await CALLER.post(api.openai.url, ...);
 **Severity: Medium**
 
 **File: `src/commands/chat_ai.ts` line 12:**
+
 ```typescript
-const chatHistory: { [key: string]: [{ "role": string, "content": string }] } = {};
+const chatHistory: { [key: string]: [{ role: string; content: string }] } = {};
 ```
 
 This module-level state:
+
 - Lost on bot restart
 - Not shared across bot instances (scaling issue)
 - Memory leak potential (only splices when exceeding 100 messages)
@@ -255,6 +265,7 @@ This module-level state:
 **Severity: Low**
 
 **File: `src/index.ts` line 15:**
+
 ```typescript
 let tiktok_client;
 ```
@@ -268,6 +279,7 @@ Declared at module scope but assigned in event handler (line 76). The variable i
 **Severity: Low**
 
 Error responses use different formats:
+
 - `buildError()` returns structured error with embeds
 - Some commands return plain strings on error
 - Some throw and let index.ts handle with `buildUnknownError()`
@@ -306,6 +318,7 @@ export type CommandResponse =
 ```
 
 **Impact:**
+
 - Enables type-safe command registration
 - IDE autocomplete for command properties
 - Compile-time validation of command structure
@@ -315,7 +328,7 @@ export type CommandResponse =
 ```typescript
 export interface ExtendedClient extends Client {
     version?: string;
-    commands?: Collection<string, Command>;  // Changed from 'any'
+    commands?: Collection<string, Command>; // Changed from 'any'
 }
 ```
 
@@ -336,9 +349,15 @@ Move chat history to a dedicated service with optional persistence:
 export class ChatHistoryService {
     private history: Map<string, ChatMessage[]> = new Map();
 
-    addMessage(serverId: string, message: ChatMessage): void { /* ... */ }
-    getHistory(serverId: string): ChatMessage[] { /* ... */ }
-    clear(serverId: string): void { /* ... */ }
+    addMessage(serverId: string, message: ChatMessage): void {
+        /* ... */
+    }
+    getHistory(serverId: string): ChatMessage[] {
+        /* ... */
+    }
+    clear(serverId: string): void {
+        /* ... */
+    }
 }
 ```
 
@@ -358,8 +377,12 @@ export class BongBotError extends Error {
     }
 }
 
-export class ApiError extends BongBotError { /* ... */ }
-export class DatabaseError extends BongBotError { /* ... */ }
+export class ApiError extends BongBotError {
+    /* ... */
+}
+export class DatabaseError extends BongBotError {
+    /* ... */
+}
 ```
 
 #### 3.4.2 Add Logging to Silent Catch Blocks
@@ -399,12 +422,12 @@ Consolidate test helpers into `tests/utils/mockFactories.ts` and remove `globalT
 
 ### Priority Improvements
 
-| Priority | Improvement | Effort | Impact |
-|----------|-------------|--------|--------|
-| **High** | Add formal Command interface | Low | High |
-| **Medium** | Standardize DI across all commands | Medium | High |
-| **Low** | Extract chat history to dedicated service | Medium | Medium |
+| Priority   | Improvement                               | Effort | Impact |
+| ---------- | ----------------------------------------- | ------ | ------ |
+| **High**   | Add formal Command interface              | Low    | High   |
+| **Medium** | Standardize DI across all commands        | Medium | High   |
+| **Low**    | Extract chat history to dedicated service | Medium | Medium |
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

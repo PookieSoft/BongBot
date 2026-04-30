@@ -3,13 +3,16 @@
 # Project: BongBot
 
 ## Project Description
+
 A Discord Bot built on NodeJS in TypeScript. Contains several functions, including an ai chatbot and others. The quote functionality is provided by the external `@pookiesoft/bongbot-quote` package.
 
 ## Tech Stack:
+
 - Bot: TypeScript
 - Testing: jest, ts-jest
 
 ## Code Conventions
+
 - 4-space indentation
 - PascalCase for class declarations
 - snake_case preferred for file names and bot input variables
@@ -24,6 +27,7 @@ A Discord Bot built on NodeJS in TypeScript. Contains several functions, includi
     - interface declarations
 
 ## Project Structure
+
 - /src - Main source code
     - /commands - Slash commands
     - /config - Environment Variable config converted to an importable .js file for readability
@@ -33,6 +37,7 @@ A Discord Bot built on NodeJS in TypeScript. Contains several functions, includi
 - tests - Test Files
 
 ## Important Notes
+
 - API calls should use caller utility in /src/helpers/caller.ts
 - New components should have an accompanying test file and aim for 100% coverage
 - Dependency Injection should be used to reduce individual complexity
@@ -61,6 +66,7 @@ NODE_OPTIONS=--experimental-vm-modules npx jest --testNamePattern="should return
 ### Entry Point and Bot Lifecycle
 
 `src/index.ts` bootstraps the bot:
+
 1. Validates required config via `validateRequiredConfig()`
 2. Initializes logging with a session UUID
 3. Builds commands via `buildCommands()` which populates `bot.commands` Collection
@@ -70,11 +76,13 @@ NODE_OPTIONS=--experimental-vm-modules npx jest --testNamePattern="should return
 ### Command Structure
 
 Commands follow a consistent pattern with required exports:
+
 - `data`: SlashCommandBuilder definition
 - `execute(interaction, bot)`: Main handler for slash commands
 - `fullDesc`: Object with `description` and `options` for the help command
 
 Optional command methods:
+
 - `executeReply(message, bot)`: For mention-based invocation without content (used by quote creation)
 - `executeLegacy(message, bot)`: For mention-based invocation with content (used by chat)
 - `ephemeralDefer`: Boolean to make initial reply ephemeral
@@ -88,6 +96,7 @@ Commands are registered in `src/commands/buildCommands.ts` - add new commands to
 ### Testing Setup
 
 Tests use Jest with ESM support and MSW for HTTP mocking:
+
 - `tests/setup.ts`: Global MSW server lifecycle (listen/reset/close)
 - `tests/mocks/server.ts`: MSW server instance
 - `tests/mocks/handlers.ts`: Default HTTP handlers
@@ -101,4 +110,5 @@ For tests requiring custom handlers, import `setupServer` from `msw/node` and cr
 - `embedBuilder.ts`: Discord embed construction utilities
 
 ## TODO
+
 - Replace duplicated helpers/utilities (e.g. caller, errorBuilder, embedBuilder) with imports from the `bongbot-core` package, which already provides these shared modules.

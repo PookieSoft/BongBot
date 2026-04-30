@@ -29,9 +29,36 @@ import { pterodactyl } from '@pookiesoft/bongbot-ptero';
 import { quotedb } from '@pookiesoft/bongbot-quote';
 import { commandBuilder } from '@pookiesoft/bongbot-core';
 
-const commandsArray = [ arab, callirap, chat_ai, cherry, classic, club_kid, creeper, cringe, dance, die, fubuki, funk,
-                        help, hentai, hoe, info, mirasi, no, ping, polka, roll, seachicken, userinfo, vape, yes, you,
-                        pterodactyl, quotedb ];
+const commandsArray = [
+    arab,
+    callirap,
+    chat_ai,
+    cherry,
+    classic,
+    club_kid,
+    creeper,
+    cringe,
+    dance,
+    die,
+    fubuki,
+    funk,
+    help,
+    hentai,
+    hoe,
+    info,
+    mirasi,
+    no,
+    ping,
+    polka,
+    roll,
+    seachicken,
+    userinfo,
+    vape,
+    yes,
+    you,
+    pterodactyl,
+    quotedb,
+];
 
 export default function buildCommands(client: ExtendedClient) {
     return commandBuilder(client, commandsArray);

@@ -36,7 +36,7 @@ export default class TikTokLiveNotifier {
 
         this.#config = this.#validateConfig();
         this.#tiktokUsername = tiktokUsername;
-        this.#channels = process.env.TIKTOK_LIVE_CHANNEL_IDS?.split(',').filter(id => id.trim());
+        this.#channels = process.env.TIKTOK_LIVE_CHANNEL_IDS?.split(',').filter((id) => id.trim());
         this.#logger = logger;
         this.#client = client;
         this.#dayCheck = new Map<string, boolean>();
@@ -46,12 +46,10 @@ export default class TikTokLiveNotifier {
         this.#card = new EmbedBuilder()
             .setTitle('🎵 Live Notification')
             .setColor(Colors.Purple)
-            .addFields(
-                { name: `⏱️ ${this.#config.liveDisplayName} is live!`, value: liveNotif, inline: false },
-            )
+            .addFields({ name: `⏱️ ${this.#config.liveDisplayName} is live!`, value: liveNotif, inline: false })
             .setFooter({
                 text: `BongBot • ${this.#client.version}`,
-                iconURL: this.#client.user?.displayAvatarURL()
+                iconURL: this.#client.user?.displayAvatarURL(),
             });
 
         const cronPattern = `*/1 ${this.#config.liveStartTime}-${this.#config.liveEndTime} * * *`;
@@ -86,7 +84,7 @@ export default class TikTokLiveNotifier {
             twitchStream: process.env.TWITCH_STREAM,
             twitchUsername: process.env.TWITCH_USERNAME,
             instaStream: process.env.INSTA_STREAM,
-            instaUsername: process.env.INSTA_USERNAME
+            instaUsername: process.env.INSTA_USERNAME,
         };
     }
 
@@ -134,7 +132,6 @@ export default class TikTokLiveNotifier {
             for (const channelId of this.#channels) {
                 await this.#sendToChannel(channelId);
             }
-
         } catch (err) {
             this.#logger!.log('Error occurred attempting to get Live Status');
             this.#logger!.log(err instanceof Error ? err : new Error(String(err)));
@@ -160,10 +157,12 @@ export default class TikTokLiveNotifier {
             await channel.send({
                 content: '@everyone',
                 embeds: [this.#card!],
-                allowedMentions: { parse: ['everyone'] }
+                allowedMentions: { parse: ['everyone'] },
             });
         } catch (err) {
-            this.#logger!.log(`Error sending to channel ${channelId}: ${err instanceof Error ? err.message : String(err)}`);
+            this.#logger!.log(
+                `Error sending to channel ${channelId}: ${err instanceof Error ? err.message : String(err)}`
+            );
         }
     }
 }
@@ -176,9 +175,9 @@ async function fetchProfileData(username: string): Promise<ProfileData> {
 
         const response = await fetch(`https://www.tiktok.com/@${username}`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             },
-            signal: controller.signal
+            signal: controller.signal,
         });
 
         clearTimeout(timeout);

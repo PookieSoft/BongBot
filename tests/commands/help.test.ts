@@ -63,7 +63,9 @@ describe('help command execution', () => {
         expect(result).toHaveProperty('embeds');
         expect(result.embeds[0].title).toBe('testcommand');
         expect(result.embeds[0].description).toBe('This is a test command.');
-        expect(result.embeds[0].fields![0].value).toBe('option1: Description for option 1\noption2: Description for option 2');
+        expect(result.embeds[0].fields![0].value).toBe(
+            'option1: Description for option 1\noption2: Description for option 2'
+        );
     });
 
     it('should return a message for commands without full description', async () => {
@@ -118,5 +120,4 @@ describe('help command execution', () => {
         // Should not have an options field since there are no options
         expect(result.embeds[0].fields).toBeUndefined();
     });
-
 });

@@ -4,9 +4,7 @@ import { buildError } from '../helpers/errorBuilder.js';
 import { ExtendedClient } from '../helpers/interfaces.js';
 
 export default {
-    data: new SlashCommandBuilder()
-        .setName('cringe')
-        .setDescription('cringe!'),
+    data: new SlashCommandBuilder().setName('cringe').setDescription('cringe!'),
     async execute(interaction: CommandInteraction, client: ExtendedClient) {
         try {
             return await new EMBED_BUILDER().constructEmbedWithImage('cringe.png').addDefaultFooter(client).build();
@@ -16,6 +14,6 @@ export default {
     },
     fullDesc: {
         options: [],
-        description: "Posts a cringe!"
-    }
-}
+        description: 'Posts a cringe!',
+    },
+};

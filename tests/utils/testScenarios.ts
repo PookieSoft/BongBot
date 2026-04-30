@@ -2,28 +2,34 @@
  * @fileoverview Common test scenarios and patterns to eliminate duplication
  */
 
-import { CommandInteraction } from "discord.js";
-import { ExpectedResult } from "./interfaces.js";
-import { ExtendedClient } from "../../src/helpers/interfaces.js";
+import { CommandInteraction } from 'discord.js';
+import { ExpectedResult } from './interfaces.js';
+import { ExtendedClient } from '../../src/helpers/interfaces.js';
 
 /**
  * Test error handling for a command
  * @param {Function} commandExecute - The command execute function
  * @param {Object} interaction - Mock interaction
- * @param {Object} client - Mock client  
+ * @param {Object} client - Mock client
  * @param {Function} errorTriggerFn - Function that should trigger an error
  * @param {string} expectedErrorType - Expected error type to be called
  */
-const testErrorHandling = async (commandExecute: Function, interaction: CommandInteraction, client: ExtendedClient, errorTriggerFn: Function, expectedErrorType = 'buildError') => {
+const testErrorHandling = async (
+    commandExecute: Function,
+    interaction: CommandInteraction,
+    client: ExtendedClient,
+    errorTriggerFn: Function,
+    expectedErrorType = 'buildError'
+) => {
     errorTriggerFn();
     const result = await commandExecute(interaction, client);
     const errorBuilder = require('../../src/helpers/errorBuilder.js');
     expect(errorBuilder[expectedErrorType]).toHaveBeenCalled();
-    
+
     if (result?.isError !== undefined) {
         expect(result.isError).toBe(true);
     }
-    
+
     return result;
 };
 
@@ -34,29 +40,34 @@ const testErrorHandling = async (commandExecute: Function, interaction: CommandI
  * @param {Object} client - Mock client
  * @param {Object} expectedResult - Expected result properties
  */
-const testSuccessfulExecution = async (commandExecute: Function, interaction: CommandInteraction, client: ExtendedClient, expectedResult: ExpectedResult) => {
+const testSuccessfulExecution = async (
+    commandExecute: Function,
+    interaction: CommandInteraction,
+    client: ExtendedClient,
+    expectedResult: ExpectedResult
+) => {
     const result = await commandExecute(interaction, client);
-    
+
     // Check common success patterns
     if (expectedResult.hasEmbeds) {
         expect(result).toHaveProperty('embeds');
     }
-    
+
     if (expectedResult.hasFiles) {
         expect(result).toHaveProperty('files');
     }
-    
+
     if (expectedResult.isString) {
         expect(typeof result).toBe('string');
     }
-    
+
     // Check specific expected properties
     if (expectedResult.properties) {
-        expectedResult.properties.forEach(prop => {
+        expectedResult.properties.forEach((prop) => {
             expect(result).toHaveProperty(prop.key, prop.value);
         });
     }
-    
+
     return result;
 };
 
@@ -73,17 +84,17 @@ const testApiCommand = (commandName: string, commandExecute: Function, mockSetup
             if (mockSetup.successMock) {
                 mockSetup.successMock();
             }
-            
+
             const result = await testSuccessfulExecution(
                 commandExecute,
                 mockSetup.interaction,
                 mockSetup.client,
                 mockSetup.expectedSuccess
             );
-            
+
             return result;
         });
-        
+
         it('should handle API errors gracefully', async () => {
             const result = await testErrorHandling(
                 commandExecute,
@@ -92,7 +103,7 @@ const testApiCommand = (commandName: string, commandExecute: Function, mockSetup
                 mockSetup.errorTrigger,
                 mockSetup.expectedErrorType
             );
-            
+
             return result;
         });
     });
@@ -106,25 +117,20 @@ const testApiCommand = (commandName: string, commandExecute: Function, mockSetup
  */
 const testCommandOptions = (commandName: string, commandExecute: Function, optionTests: Array<any>) => {
     describe(`${commandName} option handling`, () => {
-        optionTests.forEach(test => {
+        optionTests.forEach((test) => {
             it(`should handle ${test.description}`, async () => {
                 const result = await commandExecute(test.interaction, test.client);
-                
+
                 if (test.expectations) {
                     test.expectations.forEach((expectation: Function) => {
                         expectation(result);
                     });
                 }
-                
+
                 return result;
             });
         });
     });
 };
 
-export {
-    testErrorHandling,
-    testSuccessfulExecution,
-    testApiCommand,
-    testCommandOptions
-};
+export { testErrorHandling, testSuccessfulExecution, testApiCommand, testCommandOptions };
