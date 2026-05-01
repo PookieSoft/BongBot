@@ -1,24 +1,29 @@
 name: Auto-label Dependabot PRs
 
-# Dependabot auto-applies major/minor/patch labels when those labels exist in the
-# repo, regardless of dependabot.yml's `labels:` setting. We set `labels: []` in
-# dependabot.yml to suppress all default labelling, then this workflow applies a
-# single `patch` label so every Dependabot PR is treated uniformly downstream.
+# Dependabot auto-applies major/minor/patch labels to PRs based on the detected
+# semver bump whenever those labels exist in the repository. That behaviour is
+# independent of dependabot.yml's `labels:` setting (which only controls custom
+# labels). We therefore actively remove `major` and `minor` labels and ensure
+# only `patch` is set, so all Dependabot PRs are treated as patch-level bumps
+# regardless of the dependency's actual semver change.
 
 on:
     pull_request_target:
-        types: [opened, reopened]
+        types: [opened, reopened, labeled]
 
 jobs:
-    label:
+    enforce-patch-only:
         if: github.actor == 'dependabot[bot]'
         runs-on: ubuntu-latest
         permissions:
             pull-requests: write
         steps:
-            - name: Apply patch label
+            - name: Set patch as the only version label
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   PR_NUMBER: ${{ github.event.pull_request.number }}
                   REPO: ${{ github.repository }}
-              run: gh pr edit "$PR_NUMBER" --add-label patch -R "$REPO"
+              run: |
+                  gh pr edit "$PR_NUMBER" -R "$REPO" --remove-label major || true
+                  gh pr edit "$PR_NUMBER" -R "$REPO" --remove-label minor || true
+                  gh pr edit "$PR_NUMBER" -R "$REPO" --add-label patch
