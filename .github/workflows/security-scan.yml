@@ -1,70 +1,25 @@
-# .github/workflows/security-scan.yml
 name: Security Scan
 
+# Thin caller for PookieSoft/workflows security-scan.
+
 on:
-  # Run weekly on Mondays at 9 AM UTC
-  schedule:
-    - cron: '0 9 * * 1'
-  
-  # Allow manual triggering
-  workflow_dispatch:
-  
-  # Also run on pushes to main (for immediate feedback)
-  push:
-    branches: [ main ]
-  
-  # Run on pull requests to catch issues early
-  pull_request:
-    branches: [ main ]
+    schedule:
+        - cron: '0 9 * * 1'  # Monday 9 AM UTC
+    workflow_dispatch:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+permissions:
+    contents: read
+    security-events: write
+    actions: read
 
 jobs:
-  security-scan:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-      packages: read
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
-
-      - name: Run Trivy vulnerability scanner on repository
-        uses: aquasecurity/trivy-action@master
+    scan:
+        uses: PookieSoft/workflows/.github/workflows/security-scan.yml@v1
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-repo-results.sarif'
-
-      - name: Upload repository scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-repo-results.sarif'
-          category: 'repository-scan'
-
-  docker-scan:
-    runs-on: ubuntu-latest
-    # Only run if we're on main branch (where the latest Docker image exists)
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-
-    steps:
-      - name: Run Trivy vulnerability scanner on Docker image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/bongbot:latest
-          format: 'sarif'
-          output: 'trivy-docker-results.sarif'
-
-      - name: Upload Docker scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-docker-results.sarif'
-          category: 'docker-scan'
+            docker-image-name: bongbot
+            scan-docker: true
+        secrets: inherit

@@ -1,0 +1,25 @@
+name: PR CI & Test (Dependabot)
+
+# Thin caller for PookieSoft/workflows dependabot-pr-ci.
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, reopened]
+        branches: [main]
+
+permissions:
+    contents: write
+    pull-requests: write
+    packages: read
+
+jobs:
+    ci:
+        uses: PookieSoft/workflows/.github/workflows/dependabot-pr-ci.yml@v1
+        with:
+            runtime: node
+            sync-bun-lock: false
+            build-docker: true
+            smoke-test: true
+            docker-image-name: bongbot-dependabot
+            environment: Dev
+        secrets: inherit

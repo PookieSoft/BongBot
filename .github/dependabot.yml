@@ -4,9 +4,23 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
+
+# @pookiesoft/* packages live on GitHub Packages, which Dependabot can't reach
+# with the default GITHUB_TOKEN. The DEPENDABOT_NPM_TOKEN secret is an org-level
+# Dependabot secret holding a PAT with read:packages scope.
+registries:
+    github-pookiesoft:
+        type: npm-registry
+        url: https://npm.pkg.github.com
+        token: ${{ secrets.DEPENDABOT_NPM_TOKEN }}
+
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-    labels: []
+    - package-ecosystem: 'npm'
+      directory: '/'
+      registries:
+          - github-pookiesoft
+      schedule:
+          interval: 'weekly'
+      # Labels intentionally empty — version-bump labels are applied by the
+      # centralised dependabot-pr-ci workflow on PR open.
+      labels: []

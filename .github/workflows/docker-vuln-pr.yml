@@ -1,0 +1,21 @@
+name: Docker Vulnerability PR
+
+# Thin caller for PookieSoft/workflows docker-vuln-pr.
+
+on:
+    push:
+        branches: [main]
+    schedule:
+        - cron: '0 9 * * 6'  # Saturday 9 AM UTC
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    vuln-check:
+        uses: PookieSoft/workflows/.github/workflows/docker-vuln-pr.yml@v1
+        with:
+            docker-image-name: bongbot
+        secrets: inherit
