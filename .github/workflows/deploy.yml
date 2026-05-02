@@ -1,7 +1,6 @@
 name: Create Release and Deploy BongBot
 
-# Thin caller for PookieSoft/workflows release. BongBot is a runtime bot, not
-# a published library — publish-package is false.
+# Thin caller for PookieSoft/workflows release.
 
 on:
     push:
@@ -14,13 +13,12 @@ permissions:
 
 jobs:
     release:
-        environment: Prod
         uses: PookieSoft/workflows/.github/workflows/release.yml@v1
         with:
             runtime: node
             build-docker: true
             docker-image-name: bongbot
-            publish-package: false
+            publish-package: true
             codecov-slug: PookieSoft/BongBot
             environment: Prod
             ssh-deploy: true
