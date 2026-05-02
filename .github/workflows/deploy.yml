@@ -22,4 +22,5 @@ jobs:
             codecov-slug: PookieSoft/BongBot
             environment: Prod
             ssh-deploy: true
+            service-name: bongbot
         secrets: inherit
