@@ -21,7 +21,7 @@
         "@types/node-schedule": "^2.1.8",
         "better-sqlite3": "^12.9.0",
         "cross-env": "^10.1.0",
-        "discord.js": "^14.26.3",
+        "discord.js": "^14.26.4",
         "esbuild": "^0.28.0",
         "jest": "^30.3.0",
         "jest-junit": "^17.0.0",
