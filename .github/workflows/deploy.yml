@@ -18,7 +18,7 @@ jobs:
             runtime: node
             build-docker: true
             docker-image-name: bongbot
-            publish-package: false
+            publish-package: true
             codecov-slug: PookieSoft/BongBot
             environment: Prod
             ssh-deploy: true
