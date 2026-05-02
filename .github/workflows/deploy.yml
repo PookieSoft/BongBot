@@ -9,7 +9,7 @@ on:
 permissions:
     contents: write
     pull-requests: read
-    packages: write
+    packages: read
 
 jobs:
     release:
@@ -17,9 +17,9 @@ jobs:
         with:
             runtime: node
             build-docker: true
-            docker-image-name: bongbot-ptero
+            docker-image-name: bongbot
             publish-package: true
-            codecov-slug: PookieSoft/BongBot-Ptero
+            codecov-slug: PookieSoft/BongBot
             environment: Prod
             ssh-deploy: true
         secrets: inherit
