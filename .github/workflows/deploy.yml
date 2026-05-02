@@ -1,167 +1,25 @@
-# .github/workflows/deploy.yml
 name: Create Release and Deploy BongBot
 
+# Thin caller for PookieSoft/workflows release. BongBot is a runtime bot, not
+# a published library — publish-package is false.
+
 on:
-  push:
-    branches: [ main ]
+    push:
+        branches: [main]
+
+permissions:
+    contents: write
+    pull-requests: read
+    packages: read
 
 jobs:
-  deploy:
-    environment: Prod
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: read
-      packages: read
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
+    release:
+        uses: PookieSoft/workflows/.github/workflows/release.yml@v1
         with:
-          fetch-depth: 0
-
-      # --- Run tests with coverage for production ---
-      - name: Run Unit Tests with Coverage
-        run: |
-          npm ci
-          npm run test
-        env:
-          JEST_JUNIT_OUTPUT_DIR: ./test-results
-          JEST_JUNIT_OUTPUT_NAME: junit.xml
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # --- Upload coverage and test analytics to Codecov ---
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage/lcov.info
-          flags: production
-          name: production-coverage
-          fail_ci_if_error: false
-          override_branch: main
-          override_commit: ${{ github.sha }}
-
-      # --- Upload test results to Codecov for test analytics ---
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          name: production-test-results
-          flags: production,tests
-          fail_ci_if_error: false
-
-      - name: Find Pull Request and Get Labels
-        id: find_pr
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Find PR associated with current commit
-          pr_number=$(gh pr list --state merged --json number,mergeCommit --jq ".[] | select(.mergeCommit.oid == \"${{ github.sha }}\") | .number")
-          
-          if [[ -n "$pr_number" ]]; then
-            echo "Found merged PR #$pr_number"
-            # Get PR labels
-            labels=$(gh pr view $pr_number --json labels --jq '(.labels // []) | map(.name) | join(",")')
-            echo "PR labels: $labels"
-            echo "number=$pr_number" >> $GITHUB_OUTPUT
-            echo "labels=$labels" >> $GITHUB_OUTPUT
-          else
-            echo "No merged PR found for this commit"
-            echo "number=" >> $GITHUB_OUTPUT
-            echo "labels=" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Determine Version Bump Level
-        id: get_level
-        env:
-          PR_LABELS: ${{ steps.find_pr.outputs.labels }}
-        run: |
-          level=""
-          # Check PR labels first
-          if [[ -n "${{ steps.find_pr.outputs.number }}" ]]; then
-            echo "Found PR #${{ steps.find_pr.outputs.number }}. Checking labels: $PR_LABELS"
-            if [[ "$PR_LABELS" == *"major"* ]]; then
-              level="major"
-            elif [[ "$PR_LABELS" == *"minor"* ]]; then
-              level="minor"
-            elif [[ "$PR_LABELS" == *"patch"* ]]; then
-              level="patch"
-            fi
-          fi
-
-          # If no level from labels, check commit message as a fallback
-          if [[ -z "$level" ]]; then
-            echo "No version label found on PR, or no PR found. Checking commit message."
-            commit_message=$(git log -1 --pretty=%B)
-            if [[ "$commit_message" == *"[major]"* || "$commit_message" == *"major:"* ]]; then
-              level="major"
-            elif [[ "$commit_message" == *"[minor]"* || "$commit_message" == *"minor:"* ]]; then
-              level="minor"
-            else
-              # Default to patch if no other indicator is found
-              level="patch"
-            fi
-          fi
-          
-          echo "Version bump determined as: $level"
-          echo "level=$level" >> $GITHUB_OUTPUT
-
-      - name: Get next version (Dry Run)
-        id: get_version
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: ${{ steps.get_level.outputs.level }}
-          TAG_PREFIX: v
-          DRY_RUN: true
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and Push Docker Image
-        id: build_and_push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          secrets: |
-            NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/bongbot:${{ steps.get_version.outputs.new_tag }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/bongbot:latest
-
-      # --- The following steps only run after a successful deployment, but before restart to make sure version tag is available for infocard ---
-      - name: Push new version tag
-        if: success()
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: ${{ steps.get_level.outputs.level }}
-          TAG_PREFIX: v
-
-      - name: Create GitHub Release
-        if: success()
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.new_tag }}
-          release_name: Release ${{ steps.get_version.outputs.new_tag }}
-          body: |
-            ${{ github.event.head_commit.message }}
-          draft: false
-          prerelease: false
-
-      - name: SSH and Restart Service
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            sudo systemctl restart bongbot
+            runtime: node
+            build-docker: true
+            docker-image-name: bongbot
+            publish-package: false
+            codecov-slug: PookieSoft/BongBot
+            environment: Prod
+        secrets: inherit
