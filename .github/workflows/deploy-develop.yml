@@ -4,7 +4,7 @@ name: PR CI & Test
 
 on:
     pull_request:
-        types: [opened, synchronize, labeled]
+        types: [opened, synchronize]
         branches: [main]
 
 permissions:
