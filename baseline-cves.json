@@ -71,7 +71,7 @@
   },
   {
     "id": "CVE-2026-6238",
-    "severity": "UNKNOWN",
+    "severity": "MEDIUM",
     "pkg": "libc6"
   }
 ]
