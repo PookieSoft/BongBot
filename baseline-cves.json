@@ -40,71 +40,6 @@
     "pkg": "zlib1g"
   },
   {
-    "id": "CVE-2026-34180",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-34181",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-34182",
-    "severity": "MEDIUM",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-34183",
-    "severity": "MEDIUM",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42764",
-    "severity": "MEDIUM",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42766",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42767",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42768",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42769",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-42770",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-45445",
-    "severity": "MEDIUM",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-45446",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-45447",
-    "severity": "HIGH",
-    "pkg": "libssl3t64"
-  },
-  {
     "id": "CVE-2026-5435",
     "severity": "MEDIUM",
     "pkg": "libc6"
@@ -123,15 +58,5 @@
     "id": "CVE-2026-6238",
     "severity": "MEDIUM",
     "pkg": "libc6"
-  },
-  {
-    "id": "CVE-2026-7383",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
-  },
-  {
-    "id": "CVE-2026-9076",
-    "severity": "LOW",
-    "pkg": "libssl3t64"
   }
 ]
