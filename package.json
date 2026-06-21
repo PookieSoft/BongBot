@@ -12,7 +12,7 @@
     "dependencies": {
         "@pookiesoft/bongbot-core": "^1.6.28",
         "@pookiesoft/bongbot-ptero": "^1.4.11",
-        "@pookiesoft/bongbot-quote": "^2.1.28"
+        "@pookiesoft/bongbot-quote": "^2.1.36"
     },
     "devDependencies": {
         "@google/generative-ai": "^0.24.1",
