@@ -27,7 +27,7 @@
         "jest-junit": "^17.0.0",
         "msw": "^2.14.6",
         "node-schedule": "^2.1.1",
-        "prettier": "^3.9.4",
+        "prettier": "^3.9.6",
         "source-map-support": "^0.5.21",
         "ts-jest": "^29.4.11",
         "ts-jest-resolver": "^2.0.1",
