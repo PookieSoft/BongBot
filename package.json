@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@pookiesoft/bongbot-core": "^1.6.31",
-        "@pookiesoft/bongbot-ptero": "^1.4.11",
+        "@pookiesoft/bongbot-ptero": "^1.4.12",
         "@pookiesoft/bongbot-quote": "^2.1.42"
     },
     "devDependencies": {
