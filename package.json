@@ -39,5 +39,5 @@
             "better-sqlite3": "$better-sqlite3"
         }
     },
-    "_overrides_note": "TODO: Remove the bongbot-ptero override once @pookiesoft/bongbot-ptero >=1.4.14 is released with its better-sqlite3 peer range on ^13.0.0. The published 1.4.13 still declares ^12.9.0, which blocks v13 here."
+    "_overrides_note": "TODO: Remove the bongbot-ptero override once a release of @pookiesoft/bongbot-ptero carries its better-sqlite3 peer range on ^13.0.0. The published 1.4.13 still declares ^12.9.0, which blocks v13 here."
 }
