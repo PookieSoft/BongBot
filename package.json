@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@google/generative-ai": "^0.24.1",
-        "@types/better-sqlite3": "^7.6.13",
+        "@types/better-sqlite3": "^9.6.0",
         "@types/jest": "^30.0.0",
         "@types/node-schedule": "^2.1.8",
         "better-sqlite3": "^13.0.3",
