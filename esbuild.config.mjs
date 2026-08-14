@@ -47,11 +47,11 @@ const buildOptions = {
 // better-sqlite3's loader resolves relative to its own __dirname, which esbuild
 // collapses into the bundle's directory.
 function copyNativeBindings() {
-    const sqlitePath = findNativeBinding();
+    const sqlitePath = `node_modules/better-sqlite3/prebuilds/${bindingTarget()}.node`;
     const destDir = 'build/Release';
 
-    if (!sqlitePath) {
-        throw new Error(`Native binding not found for better-sqlite3 (${bindingTarget()})`);
+    if (!existsSync(sqlitePath)) {
+        throw new Error(`Native binding not found: ${sqlitePath}`);
     }
 
     try {
@@ -67,15 +67,7 @@ function copyNativeBindings() {
 }
 
 // better-sqlite3 v13 dropped prebuild-install and ships prebuilt binaries in the
-// package itself; v12 and earlier downloaded or compiled build/Release at install
-// time. Support both so the build works either side of the version bump.
-function findNativeBinding() {
-    return [
-        `node_modules/better-sqlite3/prebuilds/${bindingTarget()}.node`,
-        'node_modules/better-sqlite3/build/Release/better_sqlite3.node',
-    ].find(existsSync);
-}
-
+// package itself, keyed by platform and arch.
 function bindingTarget() {
     const isLinuxMusl = process.platform === 'linux' && !process.report.getReport().header.glibcVersionRuntime;
 
