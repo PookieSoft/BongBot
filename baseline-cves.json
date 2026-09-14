@@ -98,5 +98,10 @@
     "id": "CVE-2026-85091",
     "severity": "MEDIUM",
     "pkg": "zlib1g"
+  },
+  {
+    "id": "CVE-2026-89092",
+    "severity": "MEDIUM",
+    "pkg": "libc6"
   }
 ]
