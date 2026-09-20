@@ -10,7 +10,7 @@
         "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --json --coverage --outputFile=report.json --passWithNoTests --silent"
     },
     "dependencies": {
-        "@pookiesoft/bongbot-booru": "^1.0.0",
+        "@pookiesoft/bongbot-booru": "^1.0.1",
         "@pookiesoft/bongbot-core": "^1.7.0",
         "@pookiesoft/bongbot-ptero": "^2.0.1",
         "@pookiesoft/bongbot-quote": "^2.1.61"
